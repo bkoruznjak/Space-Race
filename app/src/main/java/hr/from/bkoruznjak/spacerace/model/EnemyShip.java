@@ -79,6 +79,11 @@ public class EnemyShip {
         public Builder bitmap(int bitmapResource) {
             this.mBitmap = BitmapFactory.decodeResource
                     (mContext.getResources(), bitmapResource);
+
+            final float scale = mContext.getResources().getDisplayMetrics().density;
+            int width = (int) (74 * scale + 0.5f);
+            int heigth = (int) (48 * scale + 0.5f);
+            this.mBitmap = Bitmap.createScaledBitmap(mBitmap, width, heigth, false);
             return this;
         }
 
