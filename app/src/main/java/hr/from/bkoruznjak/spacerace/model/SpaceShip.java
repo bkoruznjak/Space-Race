@@ -9,19 +9,74 @@ import android.graphics.BitmapFactory;
  */
 
 public class SpaceShip {
+
+    private final int GRAVITY = -12;
+    //Limit the bounds of the ship's speed
+    private final int MIN_SPEED = 1;
+    private final int MAX_SPEED = 20;
+    // Stop ship leaving the screen
+    private int maxY;
+    private int minY;
+
     private Bitmap bitmap;
-    private int x, y;
+    private int x, y, screenX, screenY;
     private int speed;
+    private boolean boosting;
 
     private SpaceShip(Builder builder) {
         this.bitmap = builder.bitmap;
         this.x = builder.x;
         this.y = builder.y;
+        this.screenX = builder.screenX;
+        this.screenY = builder.screenY;
         this.speed = builder.speed;
+        this.maxY = this.screenY - bitmap.getHeight();
+        this.minY = 0;
+    }
+
+    public int getSpeed() {
+        return this.speed;
+    }
+
+    public void setBoost() {
+        boosting = true;
+    }
+
+    public void startBoost() {
+        boosting = false;
     }
 
     public void update() {
-        x++;
+        // Are we boosting?
+        if (boosting) {
+            // Speed up
+            speed += 2;
+        } else {
+            // Slow down
+            speed -= 5;
+        }
+
+        // Constrain top speed
+        if (speed > MAX_SPEED) {
+            speed = MAX_SPEED;
+        }
+
+        // Never stop completely
+        if (speed < MIN_SPEED) {
+            speed = MIN_SPEED;
+        }
+
+        // move the ship up or down
+        y -= speed + GRAVITY;
+
+        // But don't let ship stray off screen
+        if (y < minY) {
+            y = minY;
+        }
+
+        if (y > maxY) {
+            y = maxY;
+        }
     }
 
     public Bitmap getBitmap() {
@@ -39,7 +94,7 @@ public class SpaceShip {
     public static class Builder {
         private Context context;
         private Bitmap bitmap;
-        private int x, y;
+        private int x, y, screenX, screenY;
         private int speed;
 
 
@@ -60,6 +115,16 @@ public class SpaceShip {
 
         public Builder y(int y) {
             this.y = y;
+            return this;
+        }
+
+        public Builder screenX(int x) {
+            this.screenX = x;
+            return this;
+        }
+
+        public Builder screenY(int y) {
+            this.screenY = y;
             return this;
         }
 

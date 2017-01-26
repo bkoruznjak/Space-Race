@@ -1,16 +1,16 @@
 package hr.from.bkoruznjak.spacerace.view;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import hr.from.bkoruznjak.spacerace.R;
+import hr.from.bkoruznjak.spacerace.model.EnemyShip;
 import hr.from.bkoruznjak.spacerace.model.SpaceShip;
 
 /**
@@ -20,11 +20,13 @@ import hr.from.bkoruznjak.spacerace.model.SpaceShip;
 public class SRView extends SurfaceView implements Runnable, SRControl, GameControl {
 
     private static final int TARGET_FPS = 60;
+    public EnemyShip mEnemy1;
+    public EnemyShip mEnemy2;
+    public EnemyShip mEnemy3;
     private Thread gameThread = null;
     private SurfaceHolder mSurfaceHolder;
     private Canvas mScreenCanvas;
     private Paint mBackgroundColor;
-
     private SpaceShip mPlayerShip;
     private float mTargetFrameDrawTime;
     private long mStartTimeCurrentFrame;
@@ -33,28 +35,12 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private long mSleepTimeInMillis;
     private volatile boolean playing;
 
-    public SRView(Context context) {
+    public SRView(Context context, int x, int y) {
         super(context);
-        init(context);
+        init(context, x, y);
     }
 
-    public SRView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
-
-    public SRView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
-
-    @TargetApi(21)
-    public SRView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context);
-    }
-
-    private void init(Context context) {
+    private void init(Context context, int screenX, int screenY) {
         this.mTargetFrameDrawTime = 1000f / TARGET_FPS;
         this.mSurfaceHolder = getHolder();
         this.mBackgroundColor = new Paint();
@@ -64,6 +50,29 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 .speed(50)
                 .x(50)
                 .y(50)
+                .screenX(screenX)
+                .screenY(screenY)
+                .build();
+
+        this.mEnemy1 = new EnemyShip
+                .Builder(context)
+                .bitmap(R.drawable.enemy)
+                .screenX(screenX)
+                .screenY(screenY)
+                .build();
+
+        this.mEnemy2 = new EnemyShip
+                .Builder(context)
+                .bitmap(R.drawable.enemy)
+                .screenX(screenX)
+                .screenY(screenY)
+                .build();
+
+        this.mEnemy3 = new EnemyShip
+                .Builder(context)
+                .bitmap(R.drawable.enemy)
+                .screenX(screenX)
+                .screenY(screenY)
                 .build();
     }
 
@@ -81,6 +90,11 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     @Override
     public void update() {
         mPlayerShip.update();
+        // Update the enemies
+        int playerSpeed = mPlayerShip.getSpeed();
+        mEnemy1.update(playerSpeed);
+        mEnemy2.update(playerSpeed);
+        mEnemy3.update(playerSpeed);
     }
 
     @Override
@@ -100,6 +114,24 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                     mPlayerShip.getX(),
                     mPlayerShip.getY(),
                     mBackgroundColor);
+
+            mScreenCanvas.drawBitmap
+                    (mEnemy1.getBitmap(),
+                            mEnemy1.getX(),
+                            mEnemy1.getY(),
+                            mBackgroundColor);
+
+            mScreenCanvas.drawBitmap
+                    (mEnemy2.getBitmap(),
+                            mEnemy2.getX(),
+                            mEnemy2.getY(),
+                            mBackgroundColor);
+
+            mScreenCanvas.drawBitmap
+                    (mEnemy3.getBitmap(),
+                            mEnemy3.getX(),
+                            mEnemy3.getY(),
+                            mBackgroundColor);
 
             // Unlock and draw the scene
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
@@ -147,5 +179,25 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         playing = true;
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+        // There are many different events in MotionEvent
+        // We care about just 2 - for now.
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+
+            // Has the player lifted their finger up?
+            case MotionEvent.ACTION_UP:
+                // Do something here
+                break;
+
+            // Has the player touched the screen?
+            case MotionEvent.ACTION_DOWN:
+                // Do something here
+                break;
+        }
+
+        return true;
     }
 }

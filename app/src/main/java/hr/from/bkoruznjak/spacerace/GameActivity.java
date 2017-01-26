@@ -1,7 +1,9 @@
 package hr.from.bkoruznjak.spacerace;
 
 import android.app.Activity;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
 
 import hr.from.bkoruznjak.spacerace.view.SRView;
 
@@ -12,7 +14,14 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mGameSurfaceView = new SRView(this);
+        // Get a Display object to access screen details
+        Display display = getWindowManager().getDefaultDisplay();
+        // Load the resolution into a Point object
+        Point size = new Point();
+        display.getSize(size);
+
+        // Also passing in the screen resolution to the constructor
+        mGameSurfaceView = new SRView(this, size.x, size.y);
         setContentView(mGameSurfaceView);
     }
 
