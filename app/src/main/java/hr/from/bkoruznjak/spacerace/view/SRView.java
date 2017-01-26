@@ -9,8 +9,11 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.ArrayList;
+
 import hr.from.bkoruznjak.spacerace.R;
 import hr.from.bkoruznjak.spacerace.model.EnemyShip;
+import hr.from.bkoruznjak.spacerace.model.SpaceDust;
 import hr.from.bkoruznjak.spacerace.model.SpaceShip;
 
 /**
@@ -20,13 +23,16 @@ import hr.from.bkoruznjak.spacerace.model.SpaceShip;
 public class SRView extends SurfaceView implements Runnable, SRControl, GameControl {
 
     private static final int TARGET_FPS = 60;
-    public EnemyShip mEnemy1;
-    public EnemyShip mEnemy2;
-    public EnemyShip mEnemy3;
+    private EnemyShip mEnemy1;
+    private EnemyShip mEnemy2;
+    private EnemyShip mEnemy3;
+    private ArrayList<SpaceDust> mDustList = new
+            ArrayList<SpaceDust>();
     private Thread gameThread = null;
     private SurfaceHolder mSurfaceHolder;
     private Canvas mScreenCanvas;
     private Paint mBackgroundColor;
+    private Paint mStarColor;
     private SpaceShip mPlayerShip;
     private float mTargetFrameDrawTime;
     private long mStartTimeCurrentFrame;
@@ -44,6 +50,8 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         this.mTargetFrameDrawTime = 1000f / TARGET_FPS;
         this.mSurfaceHolder = getHolder();
         this.mBackgroundColor = new Paint();
+        this.mStarColor = new Paint();
+
         this.mPlayerShip = new SpaceShip
                 .Builder(context)
                 .bitmap(R.drawable.ship)
@@ -74,6 +82,13 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 .screenX(screenX)
                 .screenY(screenY)
                 .build();
+
+        int numSpecs = 40;
+        for (int i = 0; i < numSpecs; i++) {
+            // Where will the dust spawn?
+            SpaceDust spec = new SpaceDust(screenX, screenY);
+            mDustList.add(spec);
+        }
     }
 
     @Override
@@ -95,6 +110,10 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         mEnemy1.update(playerSpeed);
         mEnemy2.update(playerSpeed);
         mEnemy3.update(playerSpeed);
+
+        for (SpaceDust spaceDust : mDustList) {
+            spaceDust.update(playerSpeed);
+        }
     }
 
     @Override
@@ -107,6 +126,13 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
             // Rub out the last frame
             mScreenCanvas.drawColor(Color.argb(255, 0, 0, 0));
+
+            // White specs of dust
+            mStarColor.setColor(Color.argb(255, 255, 255, 255));
+            //Draw the dust from our arrayList
+            for (SpaceDust spaceDust : mDustList) {
+                mScreenCanvas.drawPoint(spaceDust.getX(), spaceDust.getY(), mStarColor);
+            }
 
             // Draw the player
             mScreenCanvas.drawBitmap(
