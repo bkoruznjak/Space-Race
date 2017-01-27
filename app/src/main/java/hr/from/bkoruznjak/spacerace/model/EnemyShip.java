@@ -3,6 +3,7 @@ package hr.from.bkoruznjak.spacerace.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 import java.util.Random;
 
@@ -12,6 +13,8 @@ import java.util.Random;
 
 public class EnemyShip {
     private Bitmap mBitmap;
+    // A hit box for collision detection
+    private Rect hitBox;
     private int x, y;
     private int speed = 1;
 
@@ -22,22 +25,32 @@ public class EnemyShip {
     private int minY;
 
     private EnemyShip(Bitmap mBitmap, int maxX, int maxY, int spawnX, int spawnY) {
-        this.mBitmap = mBitmap;
+        this.x = spawnX;
+        this.y = spawnY;
         this.maxX = maxX;
         this.maxY = maxY;
         this.minX = 0;
         this.minY = 0;
-
-        this.x = spawnX;
-        this.y = spawnY;
+        this.mBitmap = mBitmap;
+        this.hitBox = new Rect(x, y, mBitmap.getWidth(), mBitmap.getHeight());
     }
 
     public Bitmap getBitmap() {
         return mBitmap;
     }
 
+    public Rect getHitbox() {
+        return hitBox;
+    }
+
     public int getX() {
         return x;
+    }
+
+    // This is used by the SRView update() method to
+    // Make an enemy out of bounds and force a re-spawn
+    public void setX(int x) {
+        this.x = x;
     }
 
     public int getY() {
@@ -57,6 +70,12 @@ public class EnemyShip {
             x = maxX;
             y = generator.nextInt(maxY) - mBitmap.getHeight();
         }
+
+        // Refresh hit box location
+        hitBox.left = x;
+        hitBox.top = y;
+        hitBox.right = x + mBitmap.getWidth();
+        hitBox.bottom = y + mBitmap.getHeight();
     }
 
     public static class Builder {

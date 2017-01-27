@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -104,6 +105,28 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
     @Override
     public void update() {
+
+        // Collision detection on new positions
+        // Before move because we are testing last frames
+        // position which has just been drawn
+
+        // If you are using images in excess of 100 pixels
+        // wide then increase the -100 value accordingly
+        if (Rect.intersects
+                (mPlayerShip.getHitbox(), mEnemy1.getHitbox())) {
+            mEnemy1.setX(-500);
+        }
+
+        if (Rect.intersects
+                (mPlayerShip.getHitbox(), mEnemy2.getHitbox())) {
+            mEnemy2.setX(-500);
+        }
+
+        if (Rect.intersects
+                (mPlayerShip.getHitbox(), mEnemy3.getHitbox())) {
+            mEnemy3.setX(-500);
+        }
+
         mPlayerShip.update();
         // Update the enemies
         int playerSpeed = mPlayerShip.getSpeed();

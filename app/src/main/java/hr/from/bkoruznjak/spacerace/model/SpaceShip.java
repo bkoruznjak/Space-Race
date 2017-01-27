@@ -3,6 +3,7 @@ package hr.from.bkoruznjak.spacerace.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 
 /**
  * Created by bkoruznjak on 26/01/2017.
@@ -19,6 +20,8 @@ public class SpaceShip {
     private int minY;
 
     private Bitmap bitmap;
+    // A hit box for collision detection
+    private Rect hitBox;
     private int x, y, screenX, screenY;
     private int speed;
     private boolean boosting;
@@ -32,10 +35,15 @@ public class SpaceShip {
         this.speed = builder.speed;
         this.maxY = this.screenY - bitmap.getHeight();
         this.minY = 0;
+        this.hitBox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
     }
 
     public int getSpeed() {
         return this.speed;
+    }
+
+    public Rect getHitbox() {
+        return hitBox;
     }
 
     public void setBoost() {
@@ -47,6 +55,7 @@ public class SpaceShip {
     }
 
     public void update() {
+
         // Are we boosting?
         if (boosting) {
             // Speed up
@@ -77,6 +86,12 @@ public class SpaceShip {
         if (y > maxY) {
             y = maxY;
         }
+
+        // Refresh hit box location
+        hitBox.left = x;
+        hitBox.top = y;
+        hitBox.right = x + bitmap.getWidth();
+        hitBox.bottom = y + bitmap.getHeight();
     }
 
     public Bitmap getBitmap() {
