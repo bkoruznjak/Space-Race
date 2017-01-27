@@ -34,12 +34,20 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private Canvas mScreenCanvas;
     private Paint mBackgroundColor;
     private Paint mStarColor;
+    private Paint mHudColor;
     private SpaceShip mPlayerShip;
     private float mTargetFrameDrawTime;
+    private float mDistanceRemaining;
     private long mStartTimeCurrentFrame;
     private long mDelta;
     private long mEndTimeCurrentFrame;
     private long mSleepTimeInMillis;
+    private long mTimeTaken;
+    private long mTimeStarted;
+    private long mFastestTime;
+    private int mScreenX;
+    private int mScreenY;
+
     private volatile boolean playing;
 
     public SRView(Context context, int x, int y) {
@@ -52,6 +60,9 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         this.mSurfaceHolder = getHolder();
         this.mBackgroundColor = new Paint();
         this.mStarColor = new Paint();
+        this.mHudColor = new Paint();
+        this.mScreenX = screenX;
+        this.mScreenY = screenY;
 
         this.mPlayerShip = new SpaceShip
                 .Builder(context)
@@ -181,6 +192,23 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                             mEnemy3.getX(),
                             mEnemy3.getY(),
                             mBackgroundColor);
+
+            // Draw the hud
+            mHudColor.setTextAlign(Paint.Align.LEFT);
+            mHudColor.setColor(Color.argb(255, 255, 255, 255));
+            mHudColor.setTextSize(25);
+            mScreenCanvas.drawText("Fastest:" + mFastestTime + "s", 10, 20, mHudColor);
+            mScreenCanvas.drawText("Time:" + mTimeTaken + "s", mScreenX / 2, 20, mHudColor);
+            mScreenCanvas.drawText("Distance:" +
+                    mDistanceRemaining / 1000 +
+                    " KM", mScreenX / 3, mScreenY - 20, mHudColor);
+
+            mScreenCanvas.drawText("Shield:" +
+                    mPlayerShip.getShieldStrength(), 10, mScreenY - 20, mHudColor);
+
+            mScreenCanvas.drawText("Speed:" +
+                    mPlayerShip.getSpeed() * 60 +
+                    " MPS", (mScreenX / 3) * 2, mScreenY - 20, mHudColor);
 
             // Unlock and draw the scene
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);

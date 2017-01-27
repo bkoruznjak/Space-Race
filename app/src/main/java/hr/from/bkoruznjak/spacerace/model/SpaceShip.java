@@ -22,6 +22,7 @@ public class SpaceShip {
     private Bitmap bitmap;
     // A hit box for collision detection
     private Rect hitBox;
+    private int shieldStrength;
     private int x, y, screenX, screenY;
     private int speed;
     private boolean boosting;
@@ -36,6 +37,7 @@ public class SpaceShip {
         this.maxY = this.screenY - bitmap.getHeight();
         this.minY = 0;
         this.hitBox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
+        this.shieldStrength = 3;
     }
 
     public int getSpeed() {
@@ -43,7 +45,11 @@ public class SpaceShip {
     }
 
     public Rect getHitbox() {
-        return hitBox;
+        return this.hitBox;
+    }
+
+    public int getShieldStrength() {
+        return this.shieldStrength;
     }
 
     public void setBoost() {
