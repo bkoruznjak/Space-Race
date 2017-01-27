@@ -11,8 +11,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.util.ArrayList;
-
 import hr.from.bkoruznjak.spacerace.R;
 import hr.from.bkoruznjak.spacerace.model.EnemyShip;
 import hr.from.bkoruznjak.spacerace.model.SpaceDust;
@@ -32,8 +30,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private EnemyShip mEnemy1;
     private EnemyShip mEnemy2;
     private EnemyShip mEnemy3;
-    private ArrayList<SpaceDust> mDustList = new
-            ArrayList<SpaceDust>();
+    private SpaceDust[] mDustArray;
     private Thread gameThread = null;
     private SurfaceHolder mSurfaceHolder;
     private Canvas mScreenCanvas;
@@ -121,10 +118,11 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 .build();
 
         int numSpecs = 40;
+        mDustArray = new SpaceDust[40];
         for (int i = 0; i < numSpecs; i++) {
             // Where will the dust spawn?
             SpaceDust spec = new SpaceDust(mScreenX, mScreenY);
-            mDustList.add(spec);
+            mDustArray[i] = spec;
         }
 
         // Reset time and distance
@@ -188,8 +186,8 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         mEnemy2.update(playerSpeed);
         mEnemy3.update(playerSpeed);
 
-        for (int i = 0; i < mDustList.size(); i++) {
-            (mDustList.get(i)).update(playerSpeed);
+        for (int i = 0; i < mDustArray.length; i++) {
+            (mDustArray[i]).update(playerSpeed);
         }
 
         if (!gameEnded) {
@@ -233,8 +231,9 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
             mStarColor.setColor(Color.argb(255, 255, 255, 255));
             //Draw the dust from our arrayList
 
-            for (int i = 0; i < mDustList.size(); i++) {
-                mScreenCanvas.drawPoint((mDustList.get(i)).getX(), (mDustList.get(i)).getY(), mStarColor);
+
+            for (int i = 0; i < mDustArray.length; i++) {
+                mScreenCanvas.drawPoint((mDustArray[i]).getX(), (mDustArray[i]).getY(), mStarColor);
             }
 
             // Draw the player
