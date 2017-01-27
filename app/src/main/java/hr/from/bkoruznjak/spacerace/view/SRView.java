@@ -96,7 +96,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
         this.mPlayerShip = new SpaceShip
                 .Builder(mContext)
-                .bitmap(R.drawable.ship)
+                .bitmap(R.drawable.viking)
                 .speed(50)
                 .x(50)
                 .y(50)
@@ -106,21 +106,21 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
         this.mEnemy1 = new EnemyShip
                 .Builder(mContext)
-                .bitmap(R.drawable.enemy)
+                .bitmap(R.drawable.protoss_scout)
                 .screenX(mScreenX)
                 .screenY(mScreenY)
                 .build();
 
         this.mEnemy2 = new EnemyShip
                 .Builder(mContext)
-                .bitmap(R.drawable.enemy)
+                .bitmap(R.drawable.protoss_scout)
                 .screenX(mScreenX)
                 .screenY(mScreenY)
                 .build();
 
         this.mEnemy3 = new EnemyShip
                 .Builder(mContext)
-                .bitmap(R.drawable.enemy)
+                .bitmap(R.drawable.protoss_scout)
                 .screenX(mScreenX)
                 .screenY(mScreenY)
                 .build();

@@ -130,6 +130,11 @@ public class SpaceShip {
         public Builder bitmap(int bitmapResource) {
             this.bitmap = BitmapFactory.decodeResource
                     (context.getResources(), bitmapResource);
+
+            final float scale = context.getResources().getDisplayMetrics().density;
+            int width = (int) (58 * scale + 0.5f);
+            int heigth = (int) (64 * scale + 0.5f);
+            this.bitmap = Bitmap.createScaledBitmap(bitmap, width, heigth, false);
             return this;
         }
 
