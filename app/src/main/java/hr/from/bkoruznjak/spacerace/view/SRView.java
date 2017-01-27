@@ -188,8 +188,8 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         mEnemy2.update(playerSpeed);
         mEnemy3.update(playerSpeed);
 
-        for (SpaceDust spaceDust : mDustList) {
-            spaceDust.update(playerSpeed);
+        for (int i = 0; i < mDustList.size(); i++) {
+            (mDustList.get(i)).update(playerSpeed);
         }
 
         if (!gameEnded) {
@@ -232,8 +232,9 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
             // White specs of dust
             mStarColor.setColor(Color.argb(255, 255, 255, 255));
             //Draw the dust from our arrayList
-            for (SpaceDust spaceDust : mDustList) {
-                mScreenCanvas.drawPoint(spaceDust.getX(), spaceDust.getY(), mStarColor);
+
+            for (int i = 0; i < mDustList.size(); i++) {
+                mScreenCanvas.drawPoint((mDustList.get(i)).getX(), (mDustList.get(i)).getY(), mStarColor);
             }
 
             // Draw the player
