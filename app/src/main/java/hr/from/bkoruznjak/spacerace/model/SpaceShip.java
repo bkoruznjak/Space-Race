@@ -52,11 +52,15 @@ public class SpaceShip {
         return this.shieldStrength;
     }
 
-    public void setBoost() {
-        boosting = true;
+    public void reduceShieldStrength() {
+        this.shieldStrength--;
     }
 
     public void startBoost() {
+        boosting = true;
+    }
+
+    public void stopBoost() {
         boosting = false;
     }
 

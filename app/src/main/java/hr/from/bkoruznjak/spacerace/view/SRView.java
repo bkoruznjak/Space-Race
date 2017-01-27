@@ -1,6 +1,7 @@
 package hr.from.bkoruznjak.spacerace.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,7 +24,11 @@ import hr.from.bkoruznjak.spacerace.model.SpaceShip;
 
 public class SRView extends SurfaceView implements Runnable, SRControl, GameControl {
 
+
     private static final int TARGET_FPS = 60;
+    private Context mContext;
+    private SharedPreferences mPrefs;
+    private SharedPreferences.Editor mEditor;
     private EnemyShip mEnemy1;
     private EnemyShip mEnemy2;
     private EnemyShip mEnemy3;
@@ -48,59 +53,86 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private int mScreenX;
     private int mScreenY;
 
+    private boolean gameEnded;
+
     private volatile boolean playing;
 
     public SRView(Context context, int x, int y) {
         super(context);
-        init(context, x, y);
-    }
+        this.mContext = context;
 
-    private void init(Context context, int screenX, int screenY) {
+        // Get a reference to a file called HiScores.
+        // If id doesn't exist one is created
+        mPrefs = context.getSharedPreferences("HiScores",
+                context.MODE_PRIVATE);
+
+        // Initialize the editor ready
+        mEditor = mPrefs.edit();
+
+        // Load fastest time from a entry in the file
+        //  labeled "fastestTime"
+        // if not available highscore = 1000000
+        mFastestTime = mPrefs.getLong("fastestTime", 1000000);
+
+        mScreenX = x;
+        mScreenY = y;
+
         this.mTargetFrameDrawTime = 1000f / TARGET_FPS;
         this.mSurfaceHolder = getHolder();
         this.mBackgroundColor = new Paint();
         this.mStarColor = new Paint();
         this.mHudColor = new Paint();
-        this.mScreenX = screenX;
-        this.mScreenY = screenY;
+        init();
+    }
+
+    private void init() {
+
+        gameEnded = false;
 
         this.mPlayerShip = new SpaceShip
-                .Builder(context)
+                .Builder(mContext)
                 .bitmap(R.drawable.ship)
                 .speed(50)
                 .x(50)
                 .y(50)
-                .screenX(screenX)
-                .screenY(screenY)
+                .screenX(mScreenX)
+                .screenY(mScreenY)
                 .build();
 
         this.mEnemy1 = new EnemyShip
-                .Builder(context)
+                .Builder(mContext)
                 .bitmap(R.drawable.enemy)
-                .screenX(screenX)
-                .screenY(screenY)
+                .screenX(mScreenX)
+                .screenY(mScreenY)
                 .build();
 
         this.mEnemy2 = new EnemyShip
-                .Builder(context)
+                .Builder(mContext)
                 .bitmap(R.drawable.enemy)
-                .screenX(screenX)
-                .screenY(screenY)
+                .screenX(mScreenX)
+                .screenY(mScreenY)
                 .build();
 
         this.mEnemy3 = new EnemyShip
-                .Builder(context)
+                .Builder(mContext)
                 .bitmap(R.drawable.enemy)
-                .screenX(screenX)
-                .screenY(screenY)
+                .screenX(mScreenX)
+                .screenY(mScreenY)
                 .build();
 
         int numSpecs = 40;
         for (int i = 0; i < numSpecs; i++) {
             // Where will the dust spawn?
-            SpaceDust spec = new SpaceDust(screenX, screenY);
+            SpaceDust spec = new SpaceDust(mScreenX, mScreenY);
             mDustList.add(spec);
         }
+
+        // Reset time and distance
+        mDistanceRemaining = 10000;// 10 km
+        mTimeTaken = 0;
+
+        // Get start time
+        mTimeStarted = System.currentTimeMillis();
     }
 
     @Override
@@ -123,19 +155,30 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
         // If you are using images in excess of 100 pixels
         // wide then increase the -100 value accordingly
+        boolean hitDetected = false;
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy1.getHitbox())) {
+            hitDetected = true;
             mEnemy1.setX(-500);
         }
 
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy2.getHitbox())) {
+            hitDetected = true;
             mEnemy2.setX(-500);
         }
 
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy3.getHitbox())) {
+            hitDetected = true;
             mEnemy3.setX(-500);
+        }
+
+        if (hitDetected) {
+            mPlayerShip.reduceShieldStrength();
+            if (mPlayerShip.getShieldStrength() < 0) {
+                gameEnded = true;
+            }
         }
 
         mPlayerShip.update();
@@ -147,6 +190,31 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
         for (SpaceDust spaceDust : mDustList) {
             spaceDust.update(playerSpeed);
+        }
+
+        if (!gameEnded) {
+            //subtract distance to home planet based on current speed
+            mDistanceRemaining -= mPlayerShip.getSpeed();
+
+            //How long has the player been flying
+            mTimeTaken = System.currentTimeMillis() - mTimeStarted;
+        }
+
+        //Completed the game!
+        if (mDistanceRemaining < 0) {
+            //check for new fastest time
+            if (mTimeTaken < mFastestTime) {
+                mEditor.putLong("fastestTime", mTimeTaken);
+                mEditor.apply();
+                mFastestTime = mTimeTaken;
+            }
+
+            // avoid ugly negative numbers
+            // in the HUD
+            mDistanceRemaining = 0;
+
+            // Now end the game
+            gameEnded = true;
         }
     }
 
@@ -193,22 +261,42 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                             mEnemy3.getY(),
                             mBackgroundColor);
 
-            // Draw the hud
-            mHudColor.setTextAlign(Paint.Align.LEFT);
-            mHudColor.setColor(Color.argb(255, 255, 255, 255));
-            mHudColor.setTextSize(25);
-            mScreenCanvas.drawText("Fastest:" + mFastestTime + "s", 10, 20, mHudColor);
-            mScreenCanvas.drawText("Time:" + mTimeTaken + "s", mScreenX / 2, 20, mHudColor);
-            mScreenCanvas.drawText("Distance:" +
-                    mDistanceRemaining / 1000 +
-                    " KM", mScreenX / 3, mScreenY - 20, mHudColor);
+            if (!gameEnded) {
+                // Draw the hud
+                mHudColor.setTextAlign(Paint.Align.LEFT);
+                mHudColor.setColor(Color.argb(255, 255, 255, 255));
+                mHudColor.setTextSize(25);
+                mScreenCanvas.drawText("Fastest:" + mFastestTime + "s", 10, 20, mHudColor);
+                mScreenCanvas.drawText("Time:" + mTimeTaken + "s", mScreenX / 2, 20, mHudColor);
+                mScreenCanvas.drawText("Distance:" +
+                        mDistanceRemaining / 1000 +
+                        " KM", mScreenX / 3, mScreenY - 20, mHudColor);
 
-            mScreenCanvas.drawText("Shield:" +
-                    mPlayerShip.getShieldStrength(), 10, mScreenY - 20, mHudColor);
+                mScreenCanvas.drawText("Shield:" +
+                        mPlayerShip.getShieldStrength(), 10, mScreenY - 20, mHudColor);
 
-            mScreenCanvas.drawText("Speed:" +
-                    mPlayerShip.getSpeed() * 60 +
-                    " MPS", (mScreenX / 3) * 2, mScreenY - 20, mHudColor);
+                mScreenCanvas.drawText("Speed:" +
+                        mPlayerShip.getSpeed() * 60 +
+                        " MPS", (mScreenX / 3) * 2, mScreenY - 20, mHudColor);
+            } else {
+                // Show pause screen
+                mHudColor.setTextSize(80);
+                mHudColor.setTextAlign(Paint.Align.CENTER);
+                mScreenCanvas.drawText("Game Over", mScreenX / 2, 100, mHudColor);
+                mHudColor.setTextSize(25);
+                mScreenCanvas.drawText("Fastest:" +
+                        mFastestTime + "s", mScreenX / 2, 160, mHudColor);
+
+                mScreenCanvas.drawText("Time:" + mTimeTaken +
+                        "s", mScreenX / 2, 200, mHudColor);
+
+                mScreenCanvas.drawText("Distance remaining:" +
+                        mDistanceRemaining / 1000 + " KM", mScreenX / 2, 240, mHudColor);
+
+                mHudColor.setTextSize(80);
+                mScreenCanvas.drawText("Tap to replay!", mScreenX / 2, 350, mHudColor);
+            }
+
 
             // Unlock and draw the scene
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
@@ -266,12 +354,17 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
             // Has the player lifted their finger up?
             case MotionEvent.ACTION_UP:
+                mPlayerShip.stopBoost();
                 // Do something here
                 break;
 
             // Has the player touched the screen?
             case MotionEvent.ACTION_DOWN:
-                // Do something here
+                mPlayerShip.startBoost();
+                // If we are currently on the pause screen, start a new game
+                if (gameEnded) {
+                    init();
+                }
                 break;
         }
 
