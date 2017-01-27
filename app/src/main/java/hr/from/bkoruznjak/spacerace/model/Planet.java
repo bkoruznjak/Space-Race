@@ -3,7 +3,6 @@ package hr.from.bkoruznjak.spacerace.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 
 import java.util.Random;
 
@@ -17,8 +16,6 @@ public class Planet {
     //change this if you add more planet pngs
     private static final int NUMBER_OF_PLANETS = 6;
     private Bitmap mBitmap;
-    // A hit box for collision detection
-    private Rect hitBox;
     private int x, y;
     private int speed = 1;
 
@@ -36,15 +33,10 @@ public class Planet {
         this.minX = 0;
         this.minY = 0;
         this.mBitmap = mBitmap;
-        this.hitBox = new Rect(x, y, mBitmap.getWidth(), mBitmap.getHeight());
     }
 
     public Bitmap getBitmap() {
         return mBitmap;
-    }
-
-    public Rect getHitbox() {
-        return hitBox;
     }
 
     public int getX() {
@@ -52,7 +44,7 @@ public class Planet {
     }
 
     // This is used by the SRView update() method to
-    // Make an enemy out of bounds and force a re-spawn
+    // Make a planet out of bounds and force a re-spawn
     public void setX(int x) {
         this.x = x;
     }
@@ -74,12 +66,6 @@ public class Planet {
             x = maxX;
             y = generator.nextInt(maxY) - mBitmap.getHeight();
         }
-
-        // Refresh hit box location
-        hitBox.left = x;
-        hitBox.top = y;
-        hitBox.right = x + mBitmap.getWidth();
-        hitBox.bottom = y + mBitmap.getHeight();
     }
 
     public static class Builder {
@@ -89,10 +75,10 @@ public class Planet {
         private int x, y;
         private int mSpeed = 1;
 
-        // Detect enemies leaving the screen
+        // Detect planet leaving the screen
         private int maxX;
 
-        // Spawn enemies within screen bounds
+        // Spawn planet within screen bounds
         private int maxY;
 
         public Builder(Context context) {

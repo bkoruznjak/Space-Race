@@ -126,11 +126,13 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 .build();
 
         int numSpecs = 40;
-        mDustArray = new SpaceDust[40];
-        for (int i = 0; i < numSpecs; i++) {
-            // Where will the dust spawn?
-            SpaceDust spec = new SpaceDust(mScreenX, mScreenY);
-            mDustArray[i] = spec;
+        if (mDustArray == null) {
+            mDustArray = new SpaceDust[40];
+            for (int i = 0; i < numSpecs; i++) {
+                // Where will the dust spawn?
+                SpaceDust spec = new SpaceDust(mScreenX, mScreenY);
+                mDustArray[i] = spec;
+            }
         }
 
         // Reset time and distance
