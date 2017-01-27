@@ -7,11 +7,15 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
+import hr.from.bkoruznjak.spacerace.R;
+
 /**
  * Created by bkoruznjak on 27/01/2017.
  */
 
-public class EnemyShip {
+public class Planet {
+    //change this if you add more planet pngs
+    private static final int NUMBER_OF_PLANETS = 6;
     private Bitmap mBitmap;
     // A hit box for collision detection
     private Rect hitBox;
@@ -24,14 +28,13 @@ public class EnemyShip {
     private int maxY;
     private int minY;
 
-    private EnemyShip(Bitmap mBitmap, int maxX, int maxY, int spawnX, int spawnY, int speed) {
+    private Planet(Bitmap mBitmap, int maxX, int maxY, int spawnX, int spawnY) {
         this.x = spawnX;
         this.y = spawnY;
         this.maxX = maxX;
         this.maxY = maxY;
         this.minX = 0;
         this.minY = 0;
-        this.speed = speed;
         this.mBitmap = mBitmap;
         this.hitBox = new Rect(x, y, mBitmap.getWidth(), mBitmap.getHeight());
     }
@@ -61,13 +64,13 @@ public class EnemyShip {
     public void update(int playerSpeed) {
 
         // Move to the left
-        x -= playerSpeed;
+        x -= playerSpeed / 3;
         x -= speed;
 
         //respawn when off screen
         if (x < minX - mBitmap.getWidth()) {
             Random generator = new Random();
-            speed = generator.nextInt(10) + 10;
+            speed = 1;
             x = maxX;
             y = generator.nextInt(maxY) - mBitmap.getHeight();
         }
@@ -96,17 +99,6 @@ public class EnemyShip {
             this.mContext = context;
         }
 
-        public Builder bitmap(int bitmapResource) {
-            this.mBitmap = BitmapFactory.decodeResource
-                    (mContext.getResources(), bitmapResource);
-
-            final float scale = mContext.getResources().getDisplayMetrics().density;
-            int width = (int) (74 * scale + 0.5f);
-            int heigth = (int) (48 * scale + 0.5f);
-            this.mBitmap = Bitmap.createScaledBitmap(mBitmap, width, heigth, false);
-            return this;
-        }
-
         public Builder screenX(int screenX) {
             this.maxX = screenX;
             return this;
@@ -117,15 +109,49 @@ public class EnemyShip {
             return this;
         }
 
-        public EnemyShip build() {
+        public Planet build() {
 
             Random generator = new Random();
-            this.mSpeed = generator.nextInt(10) + 10;
+            this.mSpeed = 1;
+
+            int planetId = 0;
+
+            switch (generator.nextInt(NUMBER_OF_PLANETS)) {
+                case 0:
+                    planetId = R.drawable.planet_1;
+                    break;
+                case 1:
+                    planetId = R.drawable.planet_2;
+                    break;
+                case 2:
+                    planetId = R.drawable.planet_3;
+                    break;
+                case 3:
+                    planetId = R.drawable.planet_4;
+                    break;
+                case 4:
+                    planetId = R.drawable.planet_5;
+                    break;
+                case 5:
+                    planetId = R.drawable.planet_6;
+                    break;
+
+            }
+
+            planetId = (planetId == 0) ? R.drawable.planet_1 : planetId;
+
+            this.mBitmap = BitmapFactory.decodeResource
+                    (mContext.getResources(), planetId);
+
+            final float scale = mContext.getResources().getDisplayMetrics().density;
+            int width = (int) (256 * scale + 0.5f);
+            int heigth = (int) (256 * scale + 0.5f);
+            this.mBitmap = Bitmap.createScaledBitmap(mBitmap, width, heigth, false);
 
             x = maxX;
             y = generator.nextInt(maxY) - mBitmap.getHeight();
 
-            return new EnemyShip(mBitmap, maxX, maxY, x, y, mSpeed);
+            return new Planet(mBitmap, maxX, maxY, x, y);
         }
     }
 }

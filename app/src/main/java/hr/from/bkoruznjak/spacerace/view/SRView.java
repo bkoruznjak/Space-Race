@@ -13,6 +13,7 @@ import android.view.SurfaceView;
 
 import hr.from.bkoruznjak.spacerace.R;
 import hr.from.bkoruznjak.spacerace.model.EnemyShip;
+import hr.from.bkoruznjak.spacerace.model.Planet;
 import hr.from.bkoruznjak.spacerace.model.SpaceDust;
 import hr.from.bkoruznjak.spacerace.model.SpaceShip;
 
@@ -38,6 +39,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private Paint mStarColor;
     private Paint mHudColor;
     private SpaceShip mPlayerShip;
+    private Planet mPlanet;
     private float mTargetFrameDrawTime;
     private float mDistanceRemaining;
     private long mStartTimeCurrentFrame;
@@ -85,6 +87,12 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private void init() {
 
         gameEnded = false;
+
+        this.mPlanet = new Planet
+                .Builder(mContext)
+                .screenX(mScreenX)
+                .screenY(mScreenY)
+                .build();
 
         this.mPlayerShip = new SpaceShip
                 .Builder(mContext)
@@ -182,6 +190,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         mPlayerShip.update();
         // Update the enemies
         int playerSpeed = mPlayerShip.getSpeed();
+        mPlanet.update(playerSpeed);
         mEnemy1.update(playerSpeed);
         mEnemy2.update(playerSpeed);
         mEnemy3.update(playerSpeed);
@@ -235,6 +244,13 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
             for (int i = 0; i < mDustArray.length; i++) {
                 mScreenCanvas.drawPoint((mDustArray[i]).getX(), (mDustArray[i]).getY(), mStarColor);
             }
+
+            //draw the planet
+            mScreenCanvas.drawBitmap(
+                    mPlanet.getBitmap(),
+                    mPlanet.getX(),
+                    mPlanet.getY(),
+                    mBackgroundColor);
 
             // Draw the player
             mScreenCanvas.drawBitmap(
