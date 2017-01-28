@@ -26,6 +26,9 @@ public class SpaceShip {
     private int x, y, screenX, screenY;
     private int speed;
     private boolean boosting;
+    private float mTimeSpentBoosting = 0f;
+    private float mBoostStartTime = 0f;
+    private float mBoostEndTime = 0f;
 
     private SpaceShip(Builder builder) {
         this.bitmap = builder.bitmap;
@@ -48,8 +51,31 @@ public class SpaceShip {
         return this.hitBox;
     }
 
+    public void resetShipAttributes() {
+        this.x = 50;
+        this.y = 50;
+        this.speed = 50;
+        this.shieldStrength = 3;
+        mBoostStartTime = 0f;
+        mBoostEndTime = 0f;
+        mTimeSpentBoosting = 0f;
+        update();
+    }
+
     public int getShieldStrength() {
         return this.shieldStrength;
+    }
+
+    public void setShieldStrength(int shieldStrength) {
+        this.shieldStrength = shieldStrength;
+    }
+
+    public void setScreenX(int x) {
+        this.x = x;
+    }
+
+    public void setScreenY(int y) {
+        this.y = y;
     }
 
     public void reduceShieldStrength() {
@@ -58,10 +84,18 @@ public class SpaceShip {
 
     public void startBoost() {
         boosting = true;
+        mBoostStartTime = System.nanoTime() / 1000000;
+        mBoostEndTime = 0f;
     }
 
     public void stopBoost() {
         boosting = false;
+        mBoostEndTime = System.nanoTime() / 1000000;
+        if (mBoostStartTime != 0f) {
+            mTimeSpentBoosting += mBoostEndTime - mBoostStartTime;
+        }
+        mBoostEndTime = 0f;
+        mBoostStartTime = 0f;
     }
 
     public void update() {
@@ -114,6 +148,14 @@ public class SpaceShip {
 
     public int getY() {
         return y;
+    }
+
+    public float getTimeSpentBoosting() {
+        return mTimeSpentBoosting;
+    }
+
+    public boolean isBoosting() {
+        return boosting;
     }
 
     public static class Builder {
