@@ -25,6 +25,8 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
 
     private static final int TARGET_FPS = 60;
+    //this is just a user safety feature to block immediate restart for 5secs after game ends.
+    private static final int GAME_RESET_TIMEOUT_IN_MILLIS = 1500;
     private Context mContext;
     private SharedPreferences mPrefs;
     private SharedPreferences.Editor mEditor;
@@ -44,11 +46,13 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private float mDistanceCovered;
     private boolean highScoreAchieved;
     private long mPlayerScore;
-    private long mStartTimeCurrentFrame;
+    private long mTimeStartCurrentFrame;
     private long mDelta;
-    private long mEndTimeCurrentFrame;
-    private long mSleepTimeInMillis;
+    private long mTimeEndCurrentFrame;
+    private long mTimeSleepInMillis;
     private long mTimeTaken;
+    private long mTimeResetDelayStart;
+    private long mTimeResetDelayEnd;
     private double mTimeTakenDecimal;
     private long mTimeStarted;
     private long mHighScore;
@@ -190,10 +194,11 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
             mEnemy3.setX(-mEnemy3.getHitbox().right);
         }
 
-        if (hitDetected) {
+        if (hitDetected && !gameEnded) {
             mPlayerShip.reduceShieldStrength();
             if (mPlayerShip.getShieldStrength() < 0) {
                 gameEnded = true;
+                mTimeResetDelayStart = System.currentTimeMillis();
                 if (mPlayerShip.isBoosting()) {
                     mPlayerShip.stopBoost();
                 }
@@ -231,7 +236,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     public void draw() {
         if (mSurfaceHolder.getSurface().isValid()) {
             //Get start time for FPS calcualtion
-            mStartTimeCurrentFrame = System.nanoTime() / 1000000;
+            mTimeStartCurrentFrame = System.nanoTime() / 1000000;
             //First we lock the area of memory we will be drawing to
             mScreenCanvas = mSurfaceHolder.lockCanvas();
 
@@ -327,7 +332,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
             // Unlock and draw the scene
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
             //Get end time for FPS calcualtion
-            mEndTimeCurrentFrame = System.nanoTime() / 1000000;
+            mTimeEndCurrentFrame = System.nanoTime() / 1000000;
         }
     }
 
@@ -335,10 +340,10 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     public void control() {
         try {
             //calculate FPS
-            mDelta = mEndTimeCurrentFrame - mStartTimeCurrentFrame;
-            mSleepTimeInMillis = (long) (mTargetFrameDrawTime - mDelta);
-            if (mSleepTimeInMillis > 0) {
-                gameThread.sleep(mSleepTimeInMillis);
+            mDelta = mTimeEndCurrentFrame - mTimeStartCurrentFrame;
+            mTimeSleepInMillis = (long) (mTargetFrameDrawTime - mDelta);
+            if (mTimeSleepInMillis > 0) {
+                gameThread.sleep(mTimeSleepInMillis);
             }
         } catch (InterruptedException e) {
             Log.e("bbb", "InterruptedException:" + e);
@@ -389,7 +394,12 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
             case MotionEvent.ACTION_DOWN:
                 // If we are currently on the pause screen, start a new game
                 if (gameEnded) {
-                    init();
+                    mTimeResetDelayEnd = System.currentTimeMillis();
+                    if ((mTimeResetDelayEnd - mTimeResetDelayStart) >= GAME_RESET_TIMEOUT_IN_MILLIS) {
+                        mTimeResetDelayStart = 0;
+                        mTimeResetDelayEnd = 0;
+                        init();
+                    }
                 } else {
                     mPlayerShip.startBoost();
                 }

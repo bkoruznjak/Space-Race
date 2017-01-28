@@ -52,14 +52,18 @@ public class SpaceShip {
     }
 
     public void resetShipAttributes() {
-        this.x = 50;
-        this.y = 50;
-        this.speed = 50;
-        this.shieldStrength = 3;
+        x = 50;
+        y = 50;
+        speed = 50;
+        shieldStrength = 3;
         mBoostStartTime = 0f;
         mBoostEndTime = 0f;
         mTimeSpentBoosting = 0f;
-        update();
+        // Refresh hit box location
+        hitBox.left = x;
+        hitBox.top = y;
+        hitBox.right = x + bitmap.getWidth();
+        hitBox.bottom = y + bitmap.getHeight();
     }
 
     public int getShieldStrength() {
