@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -195,6 +196,8 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         }
 
         if (hitDetected && !gameEnded) {
+            //we vibrate to notify user he got rekt by enemy
+            performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
             mPlayerShip.reduceShieldStrength();
             if (mPlayerShip.getShieldStrength() < 0) {
                 gameEnded = true;
