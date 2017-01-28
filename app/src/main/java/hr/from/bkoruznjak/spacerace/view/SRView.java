@@ -86,8 +86,9 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
     private void init() {
 
-        gameEnded = false;
 
+        gameEnded = false;
+        Log.d("bbb", "init :" + gameEnded);
         this.mPlanet = new Planet
                 .Builder(mContext)
                 .screenX(mScreenX)
@@ -167,25 +168,26 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy1.getHitbox())) {
             hitDetected = true;
-            mEnemy1.setX(-500);
+            mEnemy1.setX(-mEnemy1.getHitbox().right);
         }
 
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy2.getHitbox())) {
             hitDetected = true;
-            mEnemy2.setX(-500);
+            mEnemy2.setX(-mEnemy2.getHitbox().right);
         }
 
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy3.getHitbox())) {
             hitDetected = true;
-            mEnemy3.setX(-500);
+            mEnemy3.setX(-mEnemy3.getHitbox().right);
         }
 
         if (hitDetected) {
             mPlayerShip.reduceShieldStrength();
             if (mPlayerShip.getShieldStrength() < 0) {
                 gameEnded = true;
+                Log.d("bbb", "death :" + gameEnded);
             }
         }
 
@@ -224,6 +226,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
             // Now end the game
             gameEnded = true;
+            Log.d("bbb", "completed :" + gameEnded);
         }
     }
 
@@ -381,6 +384,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 mPlayerShip.startBoost();
                 // If we are currently on the pause screen, start a new game
                 if (gameEnded) {
+                    Log.d("bbb", "starting game with touch :" + gameEnded);
                     init();
                 }
                 break;
