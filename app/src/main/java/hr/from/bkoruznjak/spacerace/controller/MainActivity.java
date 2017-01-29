@@ -16,14 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import hr.from.bkoruznjak.spacerace.R;
 import hr.from.bkoruznjak.spacerace.contants.PreferenceKeyConstants;
@@ -51,26 +52,47 @@ public class MainActivity extends AppCompatActivity {
 
         isFirstRun = mPreferences.getBoolean(PreferenceKeyConstants.KEY_FIRST_RUN, true);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference highScoreReference = database.getReference("scores");
-        Query highScoreReferenceQuery = highScoreReference.orderByChild("scores").limitToLast(10);
-        highScoreReferenceQuery.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        Query highScoreReferenceQuery = highScoreReference.orderByChild("score").limitToLast(100);
 
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    HighScore score = postSnapshot.getValue(HighScore.class);
-                    Log.d("bbb", "dodajem na listu");
-                    mHighScoreList.add(score);
+
+        ChildEventListener highScoreChildEventListner = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                if (previousChildName == null) {
+                    mHighScoreList.clear();
+                }
+                HighScore tempScore = dataSnapshot.getValue(HighScore.class);
+                if (tempScore != null) {
+                    mHighScoreList.add(dataSnapshot.getValue(HighScore.class));
+                    Collections.sort(mHighScoreList);
+                    Collections.reverse(mHighScoreList);
                     mBinding.listHighscores.invalidateViews();
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+                mBinding.listHighscores.invalidateViews();
             }
-        });
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                mBinding.listHighscores.invalidateViews();
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                mBinding.listHighscores.invalidateViews();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("bbb", "db error:" + databaseError);
+            }
+        };
+        highScoreReferenceQuery.addChildEventListener(highScoreChildEventListner);
 
         final Typeface newXDigitalTypeface = Typeface.createFromAsset(getAssets(), "fonts/new_x_digital.ttf");
 
