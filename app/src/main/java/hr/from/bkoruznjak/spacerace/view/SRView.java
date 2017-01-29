@@ -59,6 +59,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private long mHighScore;
     private int mScreenX;
     private int mScreenY;
+    private int mSpecialEffectsIndex;
 
     private boolean gameEnded;
 
@@ -268,6 +269,25 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                     mPlayerShip.getX(),
                     mPlayerShip.getY(),
                     mBackgroundColor);
+
+            if (mSpecialEffectsIndex >= 3) {
+                mSpecialEffectsIndex = 0;
+            }
+
+            if (mPlayerShip.isBoosting()) {
+                mScreenCanvas.drawBitmap(
+                        mPlayerShip.getEffectTrailArrayEnhanced()[mSpecialEffectsIndex],
+                        mPlayerShip.getEffectBoostedX(),
+                        mPlayerShip.getEffectBoostedY(),
+                        mBackgroundColor);
+            } else {
+                mScreenCanvas.drawBitmap(
+                        mPlayerShip.getEffectTrailArray()[mSpecialEffectsIndex],
+                        mPlayerShip.getEffectX(),
+                        mPlayerShip.getEffectY(),
+                        mBackgroundColor);
+            }
+            mSpecialEffectsIndex++;
 
             mScreenCanvas.drawBitmap
                     (mEnemy1.getBitmap(),

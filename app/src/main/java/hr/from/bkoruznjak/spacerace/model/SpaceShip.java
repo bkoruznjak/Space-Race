@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
+import hr.from.bkoruznjak.spacerace.R;
+
 /**
  * Created by bkoruznjak on 26/01/2017.
  */
@@ -20,6 +22,13 @@ public class SpaceShip {
     private int minY;
 
     private Bitmap bitmap;
+    private Bitmap[] effectTrailArray = new Bitmap[4];
+    private Bitmap[] effectTrailArrayEnhanced = new Bitmap[4];
+    //fire effect coordinates
+    private int effectX;
+    private int effectY;
+    private int effectBoostedX;
+    private int effectBoostedY;
     // A hit box for collision detection
     private Rect hitBox;
     private int shieldStrength;
@@ -32,6 +41,8 @@ public class SpaceShip {
 
     private SpaceShip(Builder builder) {
         this.bitmap = builder.bitmap;
+        this.effectTrailArray = builder.normalEffectTrailArray;
+        this.effectTrailArrayEnhanced = builder.enhancedEffectTrailArray;
         this.x = builder.x;
         this.y = builder.y;
         this.screenX = builder.screenX;
@@ -41,6 +52,10 @@ public class SpaceShip {
         this.minY = 0;
         this.hitBox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
         this.shieldStrength = 3;
+        this.effectX = this.x + 20 - effectTrailArray[0].getWidth();
+        this.effectBoostedX = this.x + 20 - effectTrailArrayEnhanced[0].getWidth();
+        this.effectY = this.y + ((bitmap.getHeight() - effectTrailArray[0].getHeight()) / 2);
+        this.effectBoostedY = this.y + ((bitmap.getHeight() - effectTrailArrayEnhanced[0].getHeight()) / 2);
     }
 
     public int getSpeed() {
@@ -60,6 +75,10 @@ public class SpaceShip {
         mBoostEndTime = 0f;
         mTimeSpentBoosting = 0f;
         // Refresh hit box location
+        effectX = x + 20 - effectTrailArray[0].getWidth();
+        effectBoostedX = x + 20 - effectTrailArrayEnhanced[0].getWidth();
+        effectY = y + ((bitmap.getHeight() - effectTrailArray[0].getHeight()) / 2);
+        effectBoostedY = y + ((bitmap.getHeight() - effectTrailArrayEnhanced[0].getHeight()) / 2);
         hitBox.left = x;
         hitBox.top = y;
         hitBox.right = x + bitmap.getWidth();
@@ -125,14 +144,20 @@ public class SpaceShip {
 
         // move the ship up or down
         y -= speed + GRAVITY;
+        effectY -= speed + GRAVITY;
+        effectBoostedY -= speed + GRAVITY;
 
         // But don't let ship stray off screen
         if (y < minY) {
             y = minY;
+            effectY = minY + ((bitmap.getHeight() - effectTrailArray[0].getHeight()) / 2);
+            effectBoostedY = minY + ((bitmap.getHeight() - effectTrailArrayEnhanced[0].getHeight()) / 2);
         }
 
         if (y > maxY) {
             y = maxY;
+            effectY = maxY + ((bitmap.getHeight() - effectTrailArray[0].getHeight()) / 2);
+            effectBoostedY = maxY + ((bitmap.getHeight() - effectTrailArrayEnhanced[0].getHeight()) / 2);
         }
 
         // Refresh hit box location
@@ -162,9 +187,35 @@ public class SpaceShip {
         return boosting;
     }
 
+    public Bitmap[] getEffectTrailArray() {
+        return effectTrailArray;
+    }
+
+    public int getEffectX() {
+        return effectX;
+    }
+
+    public int getEffectY() {
+        return effectY;
+    }
+
+    public Bitmap[] getEffectTrailArrayEnhanced() {
+        return effectTrailArrayEnhanced;
+    }
+
+    public int getEffectBoostedY() {
+        return effectBoostedY;
+    }
+
+    public int getEffectBoostedX() {
+        return effectBoostedX;
+    }
+
     public static class Builder {
         private Context context;
         private Bitmap bitmap;
+        private Bitmap[] normalEffectTrailArray = new Bitmap[4];
+        private Bitmap[] enhancedEffectTrailArray = new Bitmap[4];
         private int x, y, screenX, screenY;
         private int speed;
 
@@ -181,6 +232,45 @@ public class SpaceShip {
             int width = (int) (58 * scale + 0.5f);
             int heigth = (int) (64 * scale + 0.5f);
             this.bitmap = Bitmap.createScaledBitmap(bitmap, width, heigth, false);
+
+            //setup the effects
+            //testing for fire effect
+            int fire_width = (int) (36 * scale + 0.5f);
+            int fire_heigth = (int) (20 * scale + 0.5f);
+
+            int fire_width_enhanced = (int) (50 * scale + 0.5f);
+            int fire_heigth_enhanced = (int) (34 * scale + 0.5f);
+            Bitmap fire1 = BitmapFactory.decodeResource
+                    (context.getResources(), R.drawable.fire_one);
+            Bitmap fire1_boosted = Bitmap.createScaledBitmap(fire1, fire_width_enhanced, fire_heigth_enhanced, false);
+            fire1 = Bitmap.createScaledBitmap(fire1, fire_width, fire_heigth, false);
+
+
+            Bitmap fire2 = BitmapFactory.decodeResource
+                    (context.getResources(), R.drawable.fire_two);
+            Bitmap fire2_boosted = Bitmap.createScaledBitmap(fire2, fire_width_enhanced, fire_heigth_enhanced, false);
+            fire2 = Bitmap.createScaledBitmap(fire2, fire_width, fire_heigth, false);
+
+            Bitmap fire3 = BitmapFactory.decodeResource
+                    (context.getResources(), R.drawable.fire_three);
+            Bitmap fire3_boosted = Bitmap.createScaledBitmap(fire3, fire_width_enhanced, fire_heigth_enhanced, false);
+            fire3 = Bitmap.createScaledBitmap(fire3, fire_width, fire_heigth, false);
+
+            Bitmap fire4 = BitmapFactory.decodeResource
+                    (context.getResources(), R.drawable.fire_four);
+            Bitmap fire4_boosted = Bitmap.createScaledBitmap(fire4, fire_width_enhanced, fire_heigth_enhanced, false);
+            fire4 = Bitmap.createScaledBitmap(fire4, fire_width, fire_heigth, false);
+
+            normalEffectTrailArray[0] = fire1;
+            normalEffectTrailArray[1] = fire2;
+            normalEffectTrailArray[2] = fire3;
+            normalEffectTrailArray[3] = fire4;
+
+            enhancedEffectTrailArray[0] = fire1_boosted;
+            enhancedEffectTrailArray[1] = fire2_boosted;
+            enhancedEffectTrailArray[2] = fire3_boosted;
+            enhancedEffectTrailArray[3] = fire4_boosted;
+
             return this;
         }
 
