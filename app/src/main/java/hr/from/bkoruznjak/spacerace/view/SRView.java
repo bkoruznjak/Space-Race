@@ -213,7 +213,8 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                     mPlayerShip.stopBoost();
                 }
                 //calculate your score
-                mPlayerScore = (long) (mDistanceCovered * mPlayerShip.getTimeSpentBoosting() / 1000);
+                mPlayerScore = (mPlayerShip.getTimeSpentBoosting() != 0) ? (long) (mDistanceCovered * mPlayerShip.getTimeSpentBoosting() / 1000) : (long) mDistanceCovered;
+
                 //todo check if its better than the other scores from firebase
                 if (mPlayerScore > mHighScore) {
                     highScoreAchieved = true;
@@ -322,7 +323,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 mHudColor.setTextAlign(Paint.Align.LEFT);
                 mHudColor.setColor(Color.argb(255, 255, 255, 255));
                 mHudColor.setTextSize(25);
-                mScreenCanvas.drawText("Top Gun:" + mHighScore, 10, 20, mHudColor);
+                mScreenCanvas.drawText("Top Score:" + mHighScore, 10, 20, mHudColor);
                 mScreenCanvas.drawText("Flight Time:" + mTimeTakenDecimal + "s", mScreenX / 2, 20, mHudColor);
                 mScreenCanvas.drawText("Distance:" +
                         mDistanceCovered / 1000 +
