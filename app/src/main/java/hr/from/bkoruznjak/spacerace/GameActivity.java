@@ -1,13 +1,13 @@
 package hr.from.bkoruznjak.spacerace;
 
-import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 
 import hr.from.bkoruznjak.spacerace.view.SRView;
 
-public class GameActivity extends Activity {
+public class GameActivity extends AppCompatActivity {
 
     SRView mGameSurfaceView;
 
