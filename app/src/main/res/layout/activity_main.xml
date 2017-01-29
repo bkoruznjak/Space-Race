@@ -20,6 +20,33 @@
             android:textColor="#ffffffff"
             android:textSize="65sp" />
 
+        <LinearLayout
+            android:id="@+id/layout_userInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:orientation="vertical">
+
+            <hr.from.bkoruznjak.spacerace.view.ScoreTextView
+                android:id="@+id/text_pilot_in_cockpit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/in_cockpit"
+                android:textColor="@color/aliasColor"
+                android:textSize="8sp" />
+
+            <Button
+                android:id="@+id/button_edit_callsign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_highscore"
+                android:text="@string/callsign"
+                android:textColor="@color/aliasColor"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/button_start_game"
             android:layout_width="wrap_content"
@@ -45,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_above="@+id/button_start_game"
+            android:layout_above="@+id/layout_userInfo"
             android:layout_below="@+id/text_highscore_title">
 
         </ListView>

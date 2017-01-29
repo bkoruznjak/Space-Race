@@ -77,7 +77,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
         // Get a reference to a file called HiScores.
         // If id doesn't exist one is created
-        mPrefs = context.getSharedPreferences("HiScores",
+        mPrefs = context.getSharedPreferences("SpaceRace",
                 context.MODE_PRIVATE);
 
         // Initialize the editor ready
