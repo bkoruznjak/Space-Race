@@ -37,6 +37,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private static final int TARGET_FPS = 60;
     //this is just a user safety feature to block immediate restart for 5secs after game ends.
     private static final int GAME_RESET_TIMEOUT_IN_MILLIS = 1500;
+    final float mScale;
     private Context mContext;
     private SharedPreferences mPrefs;
     private SharedPreferences.Editor mEditor;
@@ -71,6 +72,23 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private int mScreenY;
     private int mSpecialEffectsIndex;
 
+    //hud related constants
+    private float hudGameOverSize;
+    private float hudGameOverY;
+    private float hudHighestScoreSize;
+    private float hudHighestScoreY;
+    private float hudTimeSize;
+    private float hudTimeY;
+    private float hudDistanceCoveredSize;
+    private float hudDistanceCoveredY;
+    private float hudTapToRetrySize;
+    private float hudTapToRetryY;
+    private float hudHighScoreSize;
+    private float hudHighScoreY;
+    private float hudRecordScoreSize;
+    private float hudRecordScoreY;
+
+
     private boolean gameEnded;
 
     private volatile boolean playing;
@@ -93,9 +111,24 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         this.mStarColor = new Paint();
         this.mHudColor = new Paint();
 
-        final float scale = context.getResources().getDisplayMetrics().density;
+        mScale = context.getResources().getDisplayMetrics().density;
+        // init the HUD
+        hudGameOverSize = (50 * mScale) + 0.5f;
+        hudGameOverY = (75 * mScale) + 0.5f;
+        hudHighestScoreSize = (15 * mScale) + 0.5f;
+        hudHighestScoreY = (120 * mScale) + 0.5f;
+        hudTimeSize = (15 * mScale) + 0.5f;
+        hudTimeY = (145 * mScale) + 0.5f;
+        hudDistanceCoveredSize = (15 * mScale) + 0.5f;
+        hudDistanceCoveredY = (170 * mScale) + 0.5f;
+        hudTapToRetrySize = (30 * mScale) + 0.5f;
+        hudTapToRetryY = (230 * mScale) + 0.5f;
+        hudHighScoreSize = (50 * mScale) + 0.5f;
+        hudHighScoreY = (300 * mScale) + 0.5f;
+        hudRecordScoreSize = (60 * mScale) + 0.5f;
+        hudRecordScoreY = (310 * mScale) + 0.5f;
         //load the shield graphics
-        int life_size = (int) (16 * scale + 0.5f);
+        int life_size = (int) (16 * mScale + 0.5f);
         mImgLife = BitmapFactory.decodeResource
                 (context.getResources(), R.drawable.img_heart);
         mImgLife = Bitmap.createScaledBitmap(mImgLife, life_size, life_size, false);
@@ -350,28 +383,28 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
             } else {
                 // Show end screen
-                mHudColor.setTextSize(80);
+                mHudColor.setTextSize(hudGameOverSize);
                 mHudColor.setTextAlign(Paint.Align.CENTER);
-                mScreenCanvas.drawText("Game Over", mScreenX / 2, 100, mHudColor);
-                mHudColor.setTextSize(25);
-                mScreenCanvas.drawText("Highest score:" +
-                        mHighScore, mScreenX / 2, 160, mHudColor);
+                mScreenCanvas.drawText("Game Over", mScreenX / 2, hudGameOverY, mHudColor);
+                mHudColor.setTextSize(hudHighestScoreSize);
+                mScreenCanvas.drawText("Personal best:" +
+                        mHighScore, mScreenX / 2, hudHighestScoreY, mHudColor);
 
                 mScreenCanvas.drawText("Time:" + mTimeTakenDecimal +
-                        "s", mScreenX / 2, 200, mHudColor);
+                        "s", mScreenX / 2, hudTimeY, mHudColor);
 
                 mScreenCanvas.drawText("Distance covered:" +
-                        mDistanceCovered / 1000 + " Km", mScreenX / 2, 240, mHudColor);
+                        mDistanceCovered / 1000 + " Km", mScreenX / 2, hudDistanceCoveredY, mHudColor);
 
-                mHudColor.setTextSize(80);
-                mScreenCanvas.drawText("Tap to replay!", mScreenX / 2, 350, mHudColor);
+                mHudColor.setTextSize(hudTapToRetrySize);
+                mScreenCanvas.drawText("Tap to replay!", mScreenX / 2, hudTapToRetryY, mHudColor);
 
                 if (highScoreAchieved) {
-                    mHudColor.setTextSize(140);
-                    mScreenCanvas.drawText("NEW RECORD: " + mPlayerScore, mScreenX / 2, 550, mHudColor);
+                    mHudColor.setTextSize(hudRecordScoreSize);
+                    mScreenCanvas.drawText("NEW RECORD: " + mPlayerScore, mScreenX / 2, hudRecordScoreY, mHudColor);
                 } else {
-                    mHudColor.setTextSize(120);
-                    mScreenCanvas.drawText("SCORE: " + mPlayerScore, mScreenX / 2, 500, mHudColor);
+                    mHudColor.setTextSize(hudHighScoreSize);
+                    mScreenCanvas.drawText("SCORE: " + mPlayerScore, mScreenX / 2, hudHighScoreY, mHudColor);
                 }
 
             }
