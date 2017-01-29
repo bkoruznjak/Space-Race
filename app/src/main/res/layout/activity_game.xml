@@ -4,5 +4,5 @@
     android:id="@+id/activity_game"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="hr.from.bkoruznjak.spacerace.GameActivity">
+    tools:context="hr.from.bkoruznjak.spacerace.controller.GameActivity">
 </RelativeLayout>

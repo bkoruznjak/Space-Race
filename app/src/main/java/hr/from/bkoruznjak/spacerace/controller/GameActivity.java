@@ -1,4 +1,4 @@
-package hr.from.bkoruznjak.spacerace;
+package hr.from.bkoruznjak.spacerace.controller;
 
 import android.graphics.Point;
 import android.os.Bundle;

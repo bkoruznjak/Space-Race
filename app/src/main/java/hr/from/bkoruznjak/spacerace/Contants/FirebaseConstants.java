@@ -1,4 +1,4 @@
-package hr.from.bkoruznjak.spacerace.Contants;
+package hr.from.bkoruznjak.spacerace.contants;
 
 /**
  * Created by bkoruznjak on 29/01/2017.

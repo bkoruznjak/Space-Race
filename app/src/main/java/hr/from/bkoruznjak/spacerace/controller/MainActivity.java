@@ -1,8 +1,9 @@
-package hr.from.bkoruznjak.spacerace;
+package hr.from.bkoruznjak.spacerace.controller;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.databinding.DataBindingUtil;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -12,7 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,25 +22,38 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
+import hr.from.bkoruznjak.spacerace.R;
+import hr.from.bkoruznjak.spacerace.databinding.ActivityMainBinding;
+import hr.from.bkoruznjak.spacerace.model.adapter.HighScoreAdapter;
 import hr.from.bkoruznjak.spacerace.model.firebase.HighScore;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ActivityMainBinding mBinding;
+    private ArrayList<HighScore> mHighScoreList = new ArrayList<>();
+    private HighScoreAdapter mHighScoreAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mHighScoreAdapter = new HighScoreAdapter(this, R.layout.item_high_score, mHighScoreList);
+        mBinding.listHighscores.setAdapter(mHighScoreAdapter);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference highScoreReference = database.getReference("scores");
-        Query highScoreReferenceQuery = highScoreReference.orderByChild("scores").limitToLast(2);
+        Query highScoreReferenceQuery = highScoreReference.orderByChild("scores").limitToLast(10);
         highScoreReferenceQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     HighScore score = postSnapshot.getValue(HighScore.class);
-                    Log.d("bbb", " values is " + score.getAlias() + " " + score.getScore());
+                    Log.d("bbb", "dodajem na listu");
+                    mHighScoreList.add(score);
+                    mBinding.listHighscores.invalidateViews();
                 }
             }
 
@@ -48,21 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        Button newGameButton = (Button) findViewById(R.id.button_start_game);
 
         // Prepare to load fastest time
         SharedPreferences prefs;
         SharedPreferences.Editor editor;
         prefs = getSharedPreferences("HiScores", MODE_PRIVATE);
 
-        // Load fastest time
-        // if not available our high score = 1000000
-        long fastestTime = prefs.getLong("fastestTime", 1000000);
-
-        TextView textHighScore = (TextView) findViewById(R.id.text_high_score);
-        textHighScore.setText(textHighScore.getText().toString().concat(Long.toString(fastestTime)));
-
-        newGameButton.setOnClickListener(new View.OnClickListener() {
+        mBinding.buttonStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent startGameIntent = new Intent(MainActivity.this, GameActivity.class);
@@ -75,9 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         aliasDialogBuilder.setPositiveButton("Commit", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-                EditText userInput = (EditText) ((AlertDialog) dialog).findViewById(R.id.alias);
-                Log.d("bbb", "confirmed alias:" + userInput.getText().toString());
+                Log.d("bbb", "click control");
             }
         });
         final AlertDialog aliasDialog = aliasDialogBuilder.create();
@@ -86,16 +90,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onShow(DialogInterface arg0) {
                 aliasDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.aliasColor));
-                EditText userInput = (EditText) aliasDialog.findViewById(R.id.alias);
+                final EditText userInput = (EditText) aliasDialog.findViewById(R.id.alias);
                 userInput.getBackground().mutate().setColorFilter(getResources().getColor(R.color.aliasColor), PorterDuff.Mode.SRC_ATOP);
                 //filter only to uppercase and limit to 15
                 userInput.setFilters(new InputFilter[]{new InputFilter.AllCaps(), new InputFilter.LengthFilter(15)});
+
+                Button confirmButton = aliasDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                confirmButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // User clicked OK button
+                        if (userInput.getText().toString().isEmpty()) {
+                            Toast.makeText(getApplicationContext(), "You left an empty callsign meathead", Toast.LENGTH_SHORT).show();
+                        } else if (userInput.getText().toString().length() < 3) {
+                            Toast.makeText(getApplicationContext(), "Your Nickname is too short", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d("bbb", "confirmed alias:" + userInput.getText().toString());
+                            aliasDialog.dismiss();
+                        }
+
+                    }
+                });
 
             }
         });
         aliasDialog.setCanceledOnTouchOutside(false);
         aliasDialog.show();
-
-
     }
 }
