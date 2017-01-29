@@ -7,25 +7,20 @@
     android:padding="10dp"
     android:weightSum="8">
 
-    <TextView
+    <hr.from.bkoruznjak.spacerace.view.ScoreTextView
         android:id="@+id/text_score"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="4"
         android:gravity="center_horizontal"
-        android:textColor="@color/aliasColorDark" />
+        android:textColor="@color/aliasColor" />
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="wrap_content"
-        android:background="@color/aliasColorDark" />
-
-    <TextView
+    <hr.from.bkoruznjak.spacerace.view.ScoreTextView
         android:id="@+id/text_alias"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="4"
         android:gravity="center_horizontal"
-        android:textColor="@color/aliasColorDark" />
+        android:textColor="@color/aliasColor" />
 
 </LinearLayout>

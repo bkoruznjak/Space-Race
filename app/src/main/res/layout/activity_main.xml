@@ -7,16 +7,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background"
+        android:padding="16dp"
         tools:context="hr.from.bkoruznjak.spacerace.controller.MainActivity">
 
-        <TextView
+        <hr.from.bkoruznjak.spacerace.view.TitleTextView
             android:id="@+id/text_game_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="@string/app_name"
+            android:layout_marginBottom="16dp"
+            android:text="@string/app_title"
             android:textColor="#ffffffff"
-            android:textSize="45sp" />
+            android:textSize="65sp" />
 
         <Button
             android:id="@+id/button_start_game"
@@ -28,13 +30,23 @@
             android:text="New Game"
             android:textColor="@color/aliasColor" />
 
+        <hr.from.bkoruznjak.spacerace.view.ScoreTextView
+            android:id="@+id/text_highscore_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/text_game_title"
+            android:text="Wall of fame:"
+            android:textColor="@color/aliasColor"
+            android:textSize="18sp" />
+
         <ListView
             android:id="@+id/list_highscores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
             android:layout_above="@+id/button_start_game"
-            android:layout_below="@+id/text_game_title">
+            android:layout_below="@+id/text_highscore_title">
 
         </ListView>
 

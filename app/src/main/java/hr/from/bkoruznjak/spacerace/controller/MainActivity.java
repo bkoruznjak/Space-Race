@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -67,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs;
         SharedPreferences.Editor editor;
         prefs = getSharedPreferences("HiScores", MODE_PRIVATE);
-
+        final Typeface newXDigitalTypeface = Typeface.createFromAsset(getAssets(), "fonts/new_x_digital.ttf");
+        mBinding.buttonStartGame.setTypeface(newXDigitalTypeface);
         mBinding.buttonStartGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,10 +94,12 @@ public class MainActivity extends AppCompatActivity {
                 aliasDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.aliasColor));
                 final EditText userInput = (EditText) aliasDialog.findViewById(R.id.alias);
                 userInput.getBackground().mutate().setColorFilter(getResources().getColor(R.color.aliasColor), PorterDuff.Mode.SRC_ATOP);
+                userInput.setTypeface(newXDigitalTypeface);
                 //filter only to uppercase and limit to 15
                 userInput.setFilters(new InputFilter[]{new InputFilter.AllCaps(), new InputFilter.LengthFilter(15)});
 
                 Button confirmButton = aliasDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                confirmButton.setTypeface(newXDigitalTypeface);
                 confirmButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
