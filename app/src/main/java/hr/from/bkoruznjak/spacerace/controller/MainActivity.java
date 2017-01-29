@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +32,7 @@ import hr.from.bkoruznjak.spacerace.contants.PreferenceKeyConstants;
 import hr.from.bkoruznjak.spacerace.databinding.ActivityMainBinding;
 import hr.from.bkoruznjak.spacerace.model.adapter.HighScoreAdapter;
 import hr.from.bkoruznjak.spacerace.model.firebase.HighScore;
+import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         isFirstRun = mPreferences.getBoolean(PreferenceKeyConstants.KEY_FIRST_RUN, true);
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        Fabric.with(this, new Crashlytics());
         DatabaseReference highScoreReference = database.getReference("scores");
         Query highScoreReferenceQuery = highScoreReference.orderByChild("score").limitToLast(100);
 
