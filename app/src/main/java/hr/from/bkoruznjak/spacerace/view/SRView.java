@@ -12,11 +12,17 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.UUID;
+
 import hr.from.bkoruznjak.spacerace.R;
 import hr.from.bkoruznjak.spacerace.model.EnemyShip;
 import hr.from.bkoruznjak.spacerace.model.Planet;
 import hr.from.bkoruznjak.spacerace.model.SpaceDust;
 import hr.from.bkoruznjak.spacerace.model.SpaceShip;
+import hr.from.bkoruznjak.spacerace.model.firebase.HighScore;
 
 /**
  * Created by bkoruznjak on 26/01/2017.
@@ -208,11 +214,15 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 }
                 //calculate your score
                 mPlayerScore = (long) (mDistanceCovered * mPlayerShip.getTimeSpentBoosting() / 1000);
+                //todo check if its better than the other scores from firebase
                 if (mPlayerScore > mHighScore) {
                     highScoreAchieved = true;
                     mPrefs.edit().putLong("highScore", mPlayerScore).apply();
+
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("scores/".concat(UUID.randomUUID().toString()));
+                    myRef.setValue(new HighScore("Razbu", mPlayerScore));
                 }
-                //todo check if your score is good enough for highscore and commit to firebase, post new highscore text and yea partytime
             }
         }
 

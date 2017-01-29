@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "421535881395",
+    "firebase_url": "https://space-race-ef59b.firebaseio.com",
+    "project_id": "space-race-ef59b",
+    "storage_bucket": "space-race-ef59b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421535881395:android:c7b7585b3d8a5fec",
+        "android_client_info": {
+          "package_name": "hr.from.bkoruznjak.spacerace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "421535881395-5jc9obvjf6opdec56htkjevtf2heva6l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6QPCus1MtBlCqbPwAAZ4AeRyA3KUUAqI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
