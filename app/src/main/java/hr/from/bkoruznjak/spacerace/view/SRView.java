@@ -348,10 +348,6 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                             mBackgroundColor);
                 }
 
-
-                mScreenCanvas.drawText("Velocity:" +
-                        mPlayerShip.getSpeed() * 60 +
-                        " mps", (mScreenX / 3) * 2, mScreenY - 20, mHudColor);
             } else {
                 // Show end screen
                 mHudColor.setTextSize(80);
