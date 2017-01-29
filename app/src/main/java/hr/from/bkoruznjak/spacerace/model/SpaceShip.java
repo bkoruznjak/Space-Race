@@ -16,7 +16,7 @@ public class SpaceShip {
     private final int GRAVITY = -12;
     //Limit the bounds of the ship's speed
     private final int MIN_SPEED = 1;
-    private final int MAX_SPEED = 20;
+    private final int MAX_SPEED = 25;
     // Stop ship leaving the screen
     private int maxY;
     private int minY;

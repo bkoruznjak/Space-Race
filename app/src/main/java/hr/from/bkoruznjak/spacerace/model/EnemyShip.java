@@ -67,7 +67,7 @@ public class EnemyShip {
         //respawn when off screen
         if (x < minX - mBitmap.getWidth()) {
             Random generator = new Random();
-            speed = generator.nextInt(10) + 10;
+            speed = generator.nextInt(10) + 5;
             x = maxX;
             y = generator.nextInt(maxY) - mBitmap.getHeight();
         }
@@ -101,8 +101,8 @@ public class EnemyShip {
                     (mContext.getResources(), bitmapResource);
 
             final float scale = mContext.getResources().getDisplayMetrics().density;
-            int width = (int) (74 * scale + 0.5f);
-            int heigth = (int) (48 * scale + 0.5f);
+            int width = (int) (64 * scale + 0.5f);
+            int heigth = (int) (38 * scale + 0.5f);
             this.mBitmap = Bitmap.createScaledBitmap(mBitmap, width, heigth, false);
             return this;
         }

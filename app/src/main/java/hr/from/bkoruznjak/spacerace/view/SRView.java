@@ -113,7 +113,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
         mScale = context.getResources().getDisplayMetrics().density;
         // init the HUD
-        hudGameOverSize = (50 * mScale) + 0.5f;
+        hudGameOverSize = (35 * mScale) + 0.5f;
         hudGameOverY = (75 * mScale) + 0.5f;
         hudHighestScoreSize = (15 * mScale) + 0.5f;
         hudHighestScoreY = (120 * mScale) + 0.5f;
@@ -123,9 +123,9 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         hudDistanceCoveredY = (170 * mScale) + 0.5f;
         hudTapToRetrySize = (30 * mScale) + 0.5f;
         hudTapToRetryY = (230 * mScale) + 0.5f;
-        hudHighScoreSize = (50 * mScale) + 0.5f;
+        hudHighScoreSize = (40 * mScale) + 0.5f;
         hudHighScoreY = (300 * mScale) + 0.5f;
-        hudRecordScoreSize = (60 * mScale) + 0.5f;
+        hudRecordScoreSize = (50 * mScale) + 0.5f;
         hudRecordScoreY = (310 * mScale) + 0.5f;
         //load the shield graphics
         int life_size = (int) (16 * mScale + 0.5f);
@@ -273,9 +273,9 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         // Update the enemies
         int playerSpeed = mPlayerShip.getSpeed();
         mPlanet.update(playerSpeed);
-        mEnemy1.update(playerSpeed);
-        mEnemy2.update(playerSpeed);
-        mEnemy3.update(playerSpeed);
+        mEnemy1.update(playerSpeed / 2);
+        mEnemy2.update(playerSpeed / 2);
+        mEnemy3.update(playerSpeed / 2);
 
         for (int i = 0; i < mDustArray.length; i++) {
             (mDustArray[i]).update(playerSpeed);
