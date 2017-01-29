@@ -2,6 +2,8 @@ package hr.from.bkoruznjak.spacerace.view;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -50,6 +52,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private Paint mHudColor;
     private SpaceShip mPlayerShip;
     private Planet mPlanet;
+    private Bitmap mImgLife;
     private float mTargetFrameDrawTime;
     private float mDistanceCovered;
     private boolean highScoreAchieved;
@@ -89,6 +92,14 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         this.mBackgroundColor = new Paint();
         this.mStarColor = new Paint();
         this.mHudColor = new Paint();
+
+        final float scale = context.getResources().getDisplayMetrics().density;
+        //load the shield graphics
+        int life_size = (int) (16 * scale + 0.5f);
+        mImgLife = BitmapFactory.decodeResource
+                (context.getResources(), R.drawable.img_heart);
+        mImgLife = Bitmap.createScaledBitmap(mImgLife, life_size, life_size, false);
+        //load the explosin graphic
         init();
     }
 
@@ -321,18 +332,26 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 mHudColor.setTextAlign(Paint.Align.LEFT);
                 mHudColor.setColor(Color.argb(255, 255, 255, 255));
                 mHudColor.setTextSize(25);
-                mScreenCanvas.drawText("Top Score:" + mHighScore, 10, 20, mHudColor);
+                mScreenCanvas.drawText("Personal best:" + mHighScore, 10, 20, mHudColor);
                 mScreenCanvas.drawText("Flight Time:" + mTimeTakenDecimal + "s", mScreenX / 2, 20, mHudColor);
                 mScreenCanvas.drawText("Distance:" +
                         mDistanceCovered / 1000 +
-                        " KM", mScreenX / 3, mScreenY - 20, mHudColor);
+                        " KM", mScreenX / 2, mScreenY - 20, mHudColor);
 
-                mScreenCanvas.drawText("Shield:" +
-                        mPlayerShip.getShieldStrength(), 10, mScreenY - 20, mHudColor);
+                for (int i = 0; i < mPlayerShip.getShieldStrength(); i++) {
 
-                mScreenCanvas.drawText("Speed:" +
+                    int xcoordinate = 10 + ((mImgLife.getHeight() + 20) * i);
+                    mScreenCanvas.drawBitmap(
+                            mImgLife,
+                            xcoordinate,
+                            mScreenY - mImgLife.getHeight(),
+                            mBackgroundColor);
+                }
+
+
+                mScreenCanvas.drawText("Velocity:" +
                         mPlayerShip.getSpeed() * 60 +
-                        " MPS", (mScreenX / 3) * 2, mScreenY - 20, mHudColor);
+                        " mps", (mScreenX / 3) * 2, mScreenY - 20, mHudColor);
             } else {
                 // Show end screen
                 mHudColor.setTextSize(80);
@@ -346,7 +365,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                         "s", mScreenX / 2, 200, mHudColor);
 
                 mScreenCanvas.drawText("Distance covered:" +
-                        mDistanceCovered / 1000 + " KM", mScreenX / 2, 240, mHudColor);
+                        mDistanceCovered / 1000 + " Km", mScreenX / 2, 240, mHudColor);
 
                 mHudColor.setTextSize(80);
                 mScreenCanvas.drawText("Tap to replay!", mScreenX / 2, 350, mHudColor);
