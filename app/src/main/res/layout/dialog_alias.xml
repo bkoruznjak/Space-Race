@@ -6,7 +6,6 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="#00000000"
         android:contentDescription="@string/app_name"
         android:scaleType="center"
         android:src="@drawable/img_wings" />
@@ -21,5 +20,6 @@
         android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
         android:hint="Enter callsign"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:textCursorDrawable="@drawable/color_cursor" />
 </LinearLayout>
