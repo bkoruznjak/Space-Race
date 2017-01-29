@@ -141,4 +141,10 @@ public class MainActivity extends AppCompatActivity {
             mPreferences.edit().putBoolean(PreferenceKeyConstants.KEY_FIRST_RUN, false).apply();
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mBinding.textPilotHighScore.setText(Long.toString(mPreferences.getLong(PreferenceKeyConstants.KEY_PERSONAL_HIGHSCORE, 0)));
+    }
 }

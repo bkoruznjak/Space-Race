@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.UUID;
 
 import hr.from.bkoruznjak.spacerace.R;
+import hr.from.bkoruznjak.spacerace.contants.PreferenceKeyConstants;
 import hr.from.bkoruznjak.spacerace.model.EnemyShip;
 import hr.from.bkoruznjak.spacerace.model.Planet;
 import hr.from.bkoruznjak.spacerace.model.SpaceDust;
@@ -77,11 +78,8 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
         // Get a reference to a file called HiScores.
         // If id doesn't exist one is created
-        mPrefs = context.getSharedPreferences("SpaceRace",
+        mPrefs = context.getSharedPreferences(PreferenceKeyConstants.KEY_SHARED_PREFERENCES,
                 context.MODE_PRIVATE);
-
-        // Initialize the editor ready
-        mEditor = mPrefs.edit();
 
         mScreenX = x;
         mScreenY = y;
@@ -99,7 +97,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         gameEnded = false;
         mPlayerScore = 0l;
         highScoreAchieved = false;
-        mHighScore = mPrefs.getLong("highScore", 0);
+        mHighScore = mPrefs.getLong(PreferenceKeyConstants.KEY_PERSONAL_HIGHSCORE, 0);
         if (playing) {
             this.mPlayerShip.resetShipAttributes();
             this.mEnemy1.setX(-mEnemy1.getHitbox().right);
@@ -218,11 +216,11 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 //todo check if its better than the other scores from firebase
                 if (mPlayerScore > mHighScore) {
                     highScoreAchieved = true;
-                    mPrefs.edit().putLong("highScore", mPlayerScore).apply();
+                    mPrefs.edit().putLong(PreferenceKeyConstants.KEY_PERSONAL_HIGHSCORE, mPlayerScore).apply();
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database.getReference("scores/".concat(UUID.randomUUID().toString()));
-                    myRef.setValue(new HighScore("Razbu", mPlayerScore));
+                    myRef.setValue(new HighScore(mPrefs.getString(PreferenceKeyConstants.KEY_ALIAS, "Callsign"), mPlayerScore));
                 }
             }
         }

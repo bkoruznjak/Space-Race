@@ -47,6 +47,35 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/layout_userHighScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/layout_userInfo"
+            android:orientation="vertical">
+
+            <hr.from.bkoruznjak.spacerace.view.ScoreTextView
+                android:id="@+id/text_pilot_highScore_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Best flight:"
+                android:textColor="@color/aliasColor"
+                android:textSize="8sp" />
+
+            <hr.from.bkoruznjak.spacerace.view.ScoreTextView
+                android:id="@+id/text_pilot_highScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_highscore"
+                android:text="000"
+                android:textColor="@color/aliasColor"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+
         <Button
             android:id="@+id/button_start_game"
             android:layout_width="wrap_content"
