@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
                 aliasDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.aliasColor));
                 EditText userInput = (EditText) aliasDialog.findViewById(R.id.alias);
                 userInput.getBackground().mutate().setColorFilter(getResources().getColor(R.color.aliasColor), PorterDuff.Mode.SRC_ATOP);
+                //filter only to uppercase and limit to 15
+                userInput.setFilters(new InputFilter[]{new InputFilter.AllCaps(), new InputFilter.LengthFilter(15)});
 
             }
         });
