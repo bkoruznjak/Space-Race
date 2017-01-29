@@ -130,7 +130,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         //load the shield graphics
         int life_size = (int) (16 * mScale + 0.5f);
         mImgLife = BitmapFactory.decodeResource
-                (context.getResources(), R.drawable.img_heart);
+                (getResources(), R.drawable.img_heart);
         mImgLife = Bitmap.createScaledBitmap(mImgLife, life_size, life_size, false);
         //load the explosin graphic
         init();
