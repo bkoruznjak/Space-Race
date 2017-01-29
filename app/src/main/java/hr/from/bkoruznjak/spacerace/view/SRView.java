@@ -17,11 +17,13 @@ import android.view.SurfaceView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import hr.from.bkoruznjak.spacerace.R;
 import hr.from.bkoruznjak.spacerace.contants.PreferenceKeyConstants;
 import hr.from.bkoruznjak.spacerace.model.EnemyShip;
+import hr.from.bkoruznjak.spacerace.model.Explosion;
 import hr.from.bkoruznjak.spacerace.model.Planet;
 import hr.from.bkoruznjak.spacerace.model.SpaceDust;
 import hr.from.bkoruznjak.spacerace.model.SpaceShip;
@@ -54,6 +56,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private SpaceShip mPlayerShip;
     private Planet mPlanet;
     private Bitmap mImgLife;
+    private Bitmap mImgExplosionSprite;
     private float mTargetFrameDrawTime;
     private float mDistanceCovered;
     private boolean highScoreAchieved;
@@ -71,6 +74,8 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private int mScreenX;
     private int mScreenY;
     private int mSpecialEffectsIndex;
+
+    private ArrayList<Explosion> mExplosionList = new ArrayList<>();
 
     //hud related constants
     private float hudGameOverSize;
@@ -130,9 +135,11 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         //load the shield graphics
         int life_size = (int) (16 * mScale + 0.5f);
         mImgLife = BitmapFactory.decodeResource
-                (context.getResources(), R.drawable.img_heart);
+                (getResources(), R.drawable.img_heart);
         mImgLife = Bitmap.createScaledBitmap(mImgLife, life_size, life_size, false);
-        //load the explosin graphic
+        //load the explosion graphic
+        mImgExplosionSprite = BitmapFactory.decodeResource(getResources(), R.drawable.explosion_spritesheet);
+        mImgExplosionSprite = Bitmap.createScaledBitmap(mImgExplosionSprite, life_size, life_size, false);
         init();
     }
 
@@ -229,18 +236,22 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy1.getHitbox())) {
             hitDetected = true;
+            mExplosionList.add(new Explosion(mEnemy1.getX(), mEnemy1.getY(), 16, mImgExplosionSprite.getWidth()));
             mEnemy1.setX(-mEnemy1.getHitbox().right);
+
         }
 
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy2.getHitbox())) {
             hitDetected = true;
+            mExplosionList.add(new Explosion(mEnemy1.getX(), mEnemy1.getY(), 16, mImgExplosionSprite.getWidth()));
             mEnemy2.setX(-mEnemy2.getHitbox().right);
         }
 
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy3.getHitbox())) {
             hitDetected = true;
+            mExplosionList.add(new Explosion(mEnemy1.getX(), mEnemy1.getY(), 16, mImgExplosionSprite.getWidth()));
             mEnemy3.setX(-mEnemy3.getHitbox().right);
         }
 
@@ -257,7 +268,6 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 //calculate your score
                 mPlayerScore = (mPlayerShip.getTimeSpentBoosting() != 0) ? (long) (mDistanceCovered * mPlayerShip.getTimeSpentBoosting() / 1000) : (long) mDistanceCovered;
 
-                //todo check if its better than the other scores from firebase
                 if (mPlayerScore > mHighScore) {
                     highScoreAchieved = true;
                     mPrefs.edit().putLong(PreferenceKeyConstants.KEY_PERSONAL_HIGHSCORE, mPlayerScore).apply();
@@ -359,6 +369,21 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                             mEnemy3.getX(),
                             mEnemy3.getY(),
                             mBackgroundColor);
+
+            //draw explosions
+            for (Explosion explosion : mExplosionList) {
+                explosion.increaseFrame();
+                if (explosion.isDone()) {
+                    mExplosionList.remove(explosion);
+                    Log.d("bbb", "finished explosion:" + explosion);
+                } else {
+                    //draw the next frame and increment;
+                    Log.d("bbb", "frame:" + explosion.getCurrentFrameIndex() + "explosion:" + explosion);
+                    Log.d("bbb", "left:" + explosion.getRectToBeDrawn().left + ", top:" + explosion.getRectToBeDrawn().top + ", right:" + explosion.getRectToBeDrawn().right + ", bottom:" + explosion.getRectToBeDrawn().bottom);
+                    Log.d("bbb", "left:" + explosion.getRectDestination().left + ", top:" + explosion.getRectDestination().top + ", right:" + explosion.getRectDestination().right + ", bottom:" + explosion.getRectDestination().bottom);
+                    mScreenCanvas.drawBitmap(mImgExplosionSprite, explosion.getRectToBeDrawn(), explosion.getRectDestination(), mBackgroundColor);
+                }
+            }
 
             if (!gameEnded) {
                 // Draw the hud
