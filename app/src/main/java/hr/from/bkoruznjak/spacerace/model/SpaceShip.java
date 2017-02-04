@@ -13,13 +13,13 @@ import hr.from.bkoruznjak.spacerace.R;
 
 public class SpaceShip {
 
+    //magic numbers, we modify these once we have the scale from the builder
+    private static int FLAME_EFFECT_X_OFFSET = 15;
+    private static int HITBOX_REDUCTON = 10;
     private final int GRAVITY = -12;
     //Limit the bounds of the ship's speed
     private final int MIN_SPEED = 1;
     private final int MAX_SPEED = 25;
-    //magic numbers
-    private final int FLAME_EFFECT_X_OFFSET = 30;
-    private final int HITBOX_REDUCTON = 10;
     // Stop ship leaving the screen
     private int maxY;
     private int minY;
@@ -231,6 +231,8 @@ public class SpaceShip {
                     (context.getResources(), bitmapResource);
 
             final float scale = context.getResources().getDisplayMetrics().density;
+            FLAME_EFFECT_X_OFFSET = (int) (FLAME_EFFECT_X_OFFSET * scale);
+            HITBOX_REDUCTON = (int) (HITBOX_REDUCTON * scale);
             int width = (int) (58 * scale + 0.5f);
             int heigth = (int) (64 * scale + 0.5f);
             this.bitmap = Bitmap.createScaledBitmap(bitmap, width, heigth, false);
