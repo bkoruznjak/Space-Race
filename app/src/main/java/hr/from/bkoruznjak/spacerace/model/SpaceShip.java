@@ -17,10 +17,12 @@ public class SpaceShip {
     //Limit the bounds of the ship's speed
     private final int MIN_SPEED = 1;
     private final int MAX_SPEED = 25;
+    //magic numbers
+    private final int FLAME_EFFECT_X_OFFSET = 30;
+    private final int HITBOX_REDUCTON = 10;
     // Stop ship leaving the screen
     private int maxY;
     private int minY;
-
     private Bitmap bitmap;
     private Bitmap[] effectTrailArray = new Bitmap[4];
     private Bitmap[] effectTrailArrayEnhanced = new Bitmap[4];
@@ -50,10 +52,10 @@ public class SpaceShip {
         this.speed = builder.speed;
         this.maxY = this.screenY - bitmap.getHeight();
         this.minY = 0;
-        this.hitBox = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
+        this.hitBox = new Rect(x + HITBOX_REDUCTON, y + HITBOX_REDUCTON, bitmap.getWidth() - HITBOX_REDUCTON, bitmap.getHeight() - HITBOX_REDUCTON);
         this.shieldStrength = 3;
-        this.effectX = this.x + 20 - effectTrailArray[0].getWidth();
-        this.effectBoostedX = this.x + 20 - effectTrailArrayEnhanced[0].getWidth();
+        this.effectX = this.x + FLAME_EFFECT_X_OFFSET - effectTrailArray[0].getWidth();
+        this.effectBoostedX = this.x + FLAME_EFFECT_X_OFFSET - effectTrailArrayEnhanced[0].getWidth();
         this.effectY = this.y + ((bitmap.getHeight() - effectTrailArray[0].getHeight()) / 2);
         this.effectBoostedY = this.y + ((bitmap.getHeight() - effectTrailArrayEnhanced[0].getHeight()) / 2);
     }
@@ -75,14 +77,14 @@ public class SpaceShip {
         mBoostEndTime = 0f;
         mTimeSpentBoosting = 0f;
         // Refresh hit box location
-        effectX = x + 20 - effectTrailArray[0].getWidth();
-        effectBoostedX = x + 20 - effectTrailArrayEnhanced[0].getWidth();
+        effectX = x + FLAME_EFFECT_X_OFFSET - effectTrailArray[0].getWidth();
+        effectBoostedX = x + FLAME_EFFECT_X_OFFSET - effectTrailArrayEnhanced[0].getWidth();
         effectY = y + ((bitmap.getHeight() - effectTrailArray[0].getHeight()) / 2);
         effectBoostedY = y + ((bitmap.getHeight() - effectTrailArrayEnhanced[0].getHeight()) / 2);
-        hitBox.left = x;
-        hitBox.top = y;
-        hitBox.right = x + bitmap.getWidth();
-        hitBox.bottom = y + bitmap.getHeight();
+        hitBox.left = x + HITBOX_REDUCTON;
+        hitBox.top = y + HITBOX_REDUCTON;
+        hitBox.right = x + bitmap.getWidth() - HITBOX_REDUCTON;
+        hitBox.bottom = y + bitmap.getHeight() - HITBOX_REDUCTON;
     }
 
     public int getShieldStrength() {
@@ -161,10 +163,10 @@ public class SpaceShip {
         }
 
         // Refresh hit box location
-        hitBox.left = x;
-        hitBox.top = y;
-        hitBox.right = x + bitmap.getWidth();
-        hitBox.bottom = y + bitmap.getHeight();
+        hitBox.left = x + HITBOX_REDUCTON;
+        hitBox.top = y + HITBOX_REDUCTON;
+        hitBox.right = x + bitmap.getWidth() - HITBOX_REDUCTON;
+        hitBox.bottom = y + bitmap.getHeight() - HITBOX_REDUCTON;
     }
 
     public Bitmap getBitmap() {

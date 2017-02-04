@@ -156,7 +156,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
             this.mPlayerShip = new SpaceShip
                     .Builder(mContext)
-                    .bitmap(R.drawable.viking)
+                    .bitmap(R.drawable.speedy)
                     .speed(50)
                     .x(50)
                     .y(50)
