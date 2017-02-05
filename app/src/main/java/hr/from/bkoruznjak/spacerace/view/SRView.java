@@ -17,7 +17,6 @@ import android.view.SurfaceView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import hr.from.bkoruznjak.spacerace.R;
@@ -39,6 +38,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private static final int TARGET_FPS = 60;
     //this is just a user safety feature to block immediate restart for 5secs after game ends.
     private static final int GAME_RESET_TIMEOUT_IN_MILLIS = 1500;
+    private static final int NUMBER_OF_ENEMIES = 3;
     final float mScale;
     private Context mContext;
     private SharedPreferences mPrefs;
@@ -75,7 +75,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
     private int mScreenY;
     private int mSpecialEffectsIndex;
 
-    private ArrayList<Explosion> mExplosionList = new ArrayList<>();
+    private Explosion[] mExplosionArray;
 
     //hud related constants
     private float hudGameOverSize;
@@ -115,6 +115,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         this.mBackgroundColor = new Paint();
         this.mStarColor = new Paint();
         this.mHudColor = new Paint();
+        this.mExplosionArray = new Explosion[NUMBER_OF_ENEMIES];
 
         mScale = context.getResources().getDisplayMetrics().density;
         // init the HUD
@@ -239,7 +240,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy1.getHitbox())) {
             hitDetected = true;
-            mExplosionList.add(new Explosion(mEnemy1.getX(), mEnemy1.getY(), 16, mImgExplosionSprite.getWidth() / 4));
+            mExplosionArray[0] = new Explosion(mEnemy1.getX(), mEnemy1.getY(), 16, mImgExplosionSprite.getWidth() / 4);
             mEnemy1.setX(-mEnemy1.getHitbox().right);
 
         }
@@ -247,14 +248,14 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy2.getHitbox())) {
             hitDetected = true;
-            mExplosionList.add(new Explosion(mEnemy2.getX(), mEnemy2.getY(), 16, mImgExplosionSprite.getWidth() / 4));
+            mExplosionArray[1] = new Explosion(mEnemy2.getX(), mEnemy2.getY(), 16, mImgExplosionSprite.getWidth() / 4);
             mEnemy2.setX(-mEnemy2.getHitbox().right);
         }
 
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy3.getHitbox())) {
             hitDetected = true;
-            mExplosionList.add(new Explosion(mEnemy2.getX(), mEnemy3.getY(), 16, mImgExplosionSprite.getWidth() / 4));
+            mExplosionArray[2] = new Explosion(mEnemy3.getX(), mEnemy3.getY(), 16, mImgExplosionSprite.getWidth() / 4);
             mEnemy3.setX(-mEnemy3.getHitbox().right);
         }
 
@@ -374,17 +375,14 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                             mBackgroundColor);
 
             //draw explosions
-            for (Explosion explosion : mExplosionList) {
-                explosion.increaseFrame();
-                if (explosion.isDone()) {
-                    mExplosionList.remove(explosion);
-                    Log.d("bbb", "finished explosion:" + explosion);
-                } else {
-                    //draw the next frame and increment;
-                    Log.d("bbb", "frame:" + explosion.getCurrentFrameIndex() + " explosion:" + explosion);
-                    Log.d("bbb", "left:" + explosion.getRectToBeDrawn().left + ", top:" + explosion.getRectToBeDrawn().top + ", right:" + explosion.getRectToBeDrawn().right + ", bottom:" + explosion.getRectToBeDrawn().bottom);
-                    Log.d("bbb", "left:" + explosion.getRectDestination().left + ", top:" + explosion.getRectDestination().top + ", right:" + explosion.getRectDestination().right + ", bottom:" + explosion.getRectDestination().bottom);
-                    mScreenCanvas.drawBitmap(mImgExplosionSprite, explosion.getRectToBeDrawn(), explosion.getRectDestination(), mBackgroundColor);
+            for (int i = 0; i < NUMBER_OF_ENEMIES; i++) {
+                if (mExplosionArray[i] != null) {
+                    mExplosionArray[i].increaseFrame();
+                    if (mExplosionArray[i].isDone()) {
+                        mExplosionArray[i] = null;
+                    } else {
+                        mScreenCanvas.drawBitmap(mImgExplosionSprite, mExplosionArray[i].getRectToBeDrawn(), mExplosionArray[i].getRectDestination(), mBackgroundColor);
+                    }
                 }
             }
 
