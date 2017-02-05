@@ -1,6 +1,7 @@
 package hr.from.bkoruznjak.spacerace.model;
 
 import android.graphics.Rect;
+import android.util.Log;
 
 /**
  * Created by bkoruznjak on 29/01/2017.
@@ -16,7 +17,7 @@ public class Explosion {
     private boolean isDone;
 
     //internal logic
-    private Rect rectToBeDrawn = new Rect();
+    private Rect rectToBeDrawn;
     private Rect rectDestination;
     private float left;
     private float top;
@@ -30,6 +31,8 @@ public class Explosion {
         this.numberOfFrames = numberOfFrames;
         this.frameSize = frameSize;
         this.rectDestination = new Rect(originX, originY, (int) (originX + frameSize), (int) (originY + frameSize));
+        this.rectToBeDrawn = new Rect(0, 0, (int) frameSize, (int) frameSize);
+        Log.d("bbb", "created new explosion with left:" + rectToBeDrawn.left + ", top:" + rectToBeDrawn.top + ", right:" + rectToBeDrawn.right + ", bottom:" + rectToBeDrawn.bottom);
 
     }
 
@@ -65,23 +68,22 @@ public class Explosion {
         if ((currentFrameIndex + 1) == numberOfFrames) {
             isDone = true;
         } else {
-            currentFrameIndex++;
             //we move down the rectangle since we have 4 images per row and reset row
-            if (currentFrameIndex % 4 == 0) {
-                top += frameSize;
-                bottom += frameSize;
+            if (currentFrameIndex != 0 && currentFrameIndex % 4 == 0) {
+                rectToBeDrawn.top += frameSize;
+                rectToBeDrawn.bottom += frameSize;
                 //reset x to start
-                left = 0;
-                right = frameSize;
+                rectToBeDrawn.left = 0;
+                rectToBeDrawn.right = (int) frameSize;
             } else {
-                left += frameSize;
-                right += frameSize;
+                rectToBeDrawn.left += frameSize;
+                rectToBeDrawn.right += frameSize;
             }
-
-            rectToBeDrawn.left = (int) left;
-            rectToBeDrawn.top = (int) top;
-            rectToBeDrawn.right = (int) right;
-            rectToBeDrawn.bottom = (int) bottom;
+            currentFrameIndex++;
+//            rectToBeDrawn.left = (int) left;
+//            rectToBeDrawn.top = (int) top;
+//            rectToBeDrawn.right = (int) right;
+//            rectToBeDrawn.bottom = (int) bottom;
 
         }
     }

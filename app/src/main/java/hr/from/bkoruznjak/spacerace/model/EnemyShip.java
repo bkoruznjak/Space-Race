@@ -7,6 +7,8 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
+import hr.from.bkoruznjak.spacerace.contants.BitmapSizeConstants;
+
 /**
  * Created by bkoruznjak on 27/01/2017.
  */
@@ -107,8 +109,8 @@ public class EnemyShip {
 
             final float scale = mContext.getResources().getDisplayMetrics().density;
             this.scale = scale;
-            int width = (int) (64 * scale + 0.5f);
-            int heigth = (int) (38 * scale + 0.5f);
+            int width = (int) (BitmapSizeConstants.WIDTH_ENEMY_SHIP_AIM * scale + 0.5f);
+            int heigth = (int) (BitmapSizeConstants.HEIGHT_ENEMY_SHIP_AIM * scale + 0.5f);
             this.mBitmap = Bitmap.createScaledBitmap(mBitmap, width, heigth, false);
             return this;
         }

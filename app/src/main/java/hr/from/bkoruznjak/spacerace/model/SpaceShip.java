@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
 import hr.from.bkoruznjak.spacerace.R;
+import hr.from.bkoruznjak.spacerace.contants.BitmapSizeConstants;
 
 /**
  * Created by bkoruznjak on 26/01/2017.
@@ -235,8 +236,8 @@ public class SpaceShip {
 
             final float scale = context.getResources().getDisplayMetrics().density;
             this.scale = scale;
-            int width = (int) (58 * scale + 0.5f);
-            int heigth = (int) (64 * scale + 0.5f);
+            int width = (int) (BitmapSizeConstants.WIDTH_PLAYER_SHIP_AIM * scale + 0.5f);
+            int heigth = (int) (BitmapSizeConstants.HEIGHT_PLAYER_SHIP_AIM * scale + 0.5f);
             this.bitmap = Bitmap.createScaledBitmap(bitmap, width, heigth, false);
 
             //setup the effects

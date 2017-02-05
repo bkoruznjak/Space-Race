@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import hr.from.bkoruznjak.spacerace.R;
+import hr.from.bkoruznjak.spacerace.contants.BitmapSizeConstants;
 import hr.from.bkoruznjak.spacerace.contants.PreferenceKeyConstants;
 import hr.from.bkoruznjak.spacerace.model.EnemyShip;
 import hr.from.bkoruznjak.spacerace.model.Explosion;
@@ -138,7 +139,10 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         mImgLife = Bitmap.createScaledBitmap(mImgLife, life_size, life_size, false);
         //load the explosion graphic
         mImgExplosionSprite = BitmapFactory.decodeResource(getResources(), R.drawable.explosion_spritesheet);
-        mImgExplosionSprite = Bitmap.createScaledBitmap(mImgExplosionSprite, life_size, life_size, false);
+        float scale = getResources().getDisplayMetrics().density;
+
+
+        mImgExplosionSprite = Bitmap.createScaledBitmap(mImgExplosionSprite, (int) (BitmapSizeConstants.WIDTH_EXPLOSION_AIM * scale), (int) (BitmapSizeConstants.WIDTH_EXPLOSION_AIM * scale), false);
         init();
     }
 
@@ -235,7 +239,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy1.getHitbox())) {
             hitDetected = true;
-            mExplosionList.add(new Explosion(mEnemy1.getX(), mEnemy1.getY(), 16, mImgExplosionSprite.getWidth()));
+            mExplosionList.add(new Explosion(mEnemy1.getX(), mEnemy1.getY(), 16, mImgExplosionSprite.getWidth() / 4));
             mEnemy1.setX(-mEnemy1.getHitbox().right);
 
         }
@@ -243,14 +247,14 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy2.getHitbox())) {
             hitDetected = true;
-            mExplosionList.add(new Explosion(mEnemy1.getX(), mEnemy1.getY(), 16, mImgExplosionSprite.getWidth()));
+            mExplosionList.add(new Explosion(mEnemy2.getX(), mEnemy2.getY(), 16, mImgExplosionSprite.getWidth() / 4));
             mEnemy2.setX(-mEnemy2.getHitbox().right);
         }
 
         if (Rect.intersects
                 (mPlayerShip.getHitbox(), mEnemy3.getHitbox())) {
             hitDetected = true;
-            mExplosionList.add(new Explosion(mEnemy1.getX(), mEnemy1.getY(), 16, mImgExplosionSprite.getWidth()));
+            mExplosionList.add(new Explosion(mEnemy2.getX(), mEnemy3.getY(), 16, mImgExplosionSprite.getWidth() / 4));
             mEnemy3.setX(-mEnemy3.getHitbox().right);
         }
 
@@ -377,7 +381,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                     Log.d("bbb", "finished explosion:" + explosion);
                 } else {
                     //draw the next frame and increment;
-                    Log.d("bbb", "frame:" + explosion.getCurrentFrameIndex() + "explosion:" + explosion);
+                    Log.d("bbb", "frame:" + explosion.getCurrentFrameIndex() + " explosion:" + explosion);
                     Log.d("bbb", "left:" + explosion.getRectToBeDrawn().left + ", top:" + explosion.getRectToBeDrawn().top + ", right:" + explosion.getRectToBeDrawn().right + ", bottom:" + explosion.getRectToBeDrawn().bottom);
                     Log.d("bbb", "left:" + explosion.getRectDestination().left + ", top:" + explosion.getRectDestination().top + ", right:" + explosion.getRectDestination().right + ", bottom:" + explosion.getRectDestination().bottom);
                     mScreenCanvas.drawBitmap(mImgExplosionSprite, explosion.getRectToBeDrawn(), explosion.getRectDestination(), mBackgroundColor);
