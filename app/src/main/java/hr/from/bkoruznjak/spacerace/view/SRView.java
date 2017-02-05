@@ -33,7 +33,6 @@ import hr.from.bkoruznjak.spacerace.model.firebase.HighScore;
 
 public class SRView extends SurfaceView implements Runnable, SRControl, GameControl {
 
-
     private static final int TARGET_FPS = 60;
     //this is just a user safety feature to block immediate restart for 5secs after game ends.
     private static final int GAME_RESET_TIMEOUT_IN_MILLIS = 1500;
@@ -166,21 +165,21 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
             this.mEnemy1 = new EnemyShip
                     .Builder(mContext)
-                    .bitmap(R.drawable.protoss_scout)
+                    .bitmap(R.drawable.enemy_ship)
                     .screenX(mScreenX)
                     .screenY(mScreenY)
                     .build();
 
             this.mEnemy2 = new EnemyShip
                     .Builder(mContext)
-                    .bitmap(R.drawable.protoss_scout)
+                    .bitmap(R.drawable.enemy_ship)
                     .screenX(mScreenX)
                     .screenY(mScreenY)
                     .build();
 
             this.mEnemy3 = new EnemyShip
                     .Builder(mContext)
-                    .bitmap(R.drawable.protoss_scout)
+                    .bitmap(R.drawable.enemy_ship)
                     .screenX(mScreenX)
                     .screenY(mScreenY)
                     .build();
@@ -485,7 +484,6 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 }
                 break;
         }
-
         return true;
     }
 }
