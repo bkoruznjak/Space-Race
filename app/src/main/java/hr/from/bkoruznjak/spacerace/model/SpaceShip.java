@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
 import hr.from.bkoruznjak.spacerace.R;
+import hr.from.bkoruznjak.spacerace.contants.BitmapSizeConstants;
 
 /**
  * Created by bkoruznjak on 26/01/2017.
@@ -235,17 +236,17 @@ public class SpaceShip {
 
             final float scale = context.getResources().getDisplayMetrics().density;
             this.scale = scale;
-            int width = (int) (58 * scale + 0.5f);
-            int heigth = (int) (64 * scale + 0.5f);
+            int width = (int) (BitmapSizeConstants.WIDTH_PLAYER_SHIP_AIM * scale + 0.5f);
+            int heigth = (int) (BitmapSizeConstants.HEIGHT_PLAYER_SHIP_AIM * scale + 0.5f);
             this.bitmap = Bitmap.createScaledBitmap(bitmap, width, heigth, false);
 
             //setup the effects
             //testing for fire effect
-            int fire_width = (int) (36 * scale + 0.5f);
-            int fire_heigth = (int) (20 * scale + 0.5f);
+            int fire_width = (int) (BitmapSizeConstants.WIDTH_PLAYER_BOOST_OFF * scale + 0.5f);
+            int fire_heigth = (int) (BitmapSizeConstants.HEIGHT_PLAYER_BOOST_OFF * scale + 0.5f);
 
-            int fire_width_enhanced = (int) (50 * scale + 0.5f);
-            int fire_heigth_enhanced = (int) (34 * scale + 0.5f);
+            int fire_width_enhanced = (int) (BitmapSizeConstants.WIDTH_PLAYER_BOOST_ON * scale + 0.5f);
+            int fire_heigth_enhanced = (int) (BitmapSizeConstants.HEIGHT_PLAYER_BOOST_ON * scale + 0.5f);
             Bitmap fire1 = BitmapFactory.decodeResource
                     (context.getResources(), R.drawable.fire_one);
             Bitmap fire1_boosted = Bitmap.createScaledBitmap(fire1, fire_width_enhanced, fire_heigth_enhanced, false);
