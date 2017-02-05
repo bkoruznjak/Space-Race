@@ -12,6 +12,8 @@ import java.util.Random;
  */
 
 public class EnemyShip {
+    //magic numbers, we modify these once we have the scale from the builder
+    private int HITBOX_REDUCTON = 10;
     private Bitmap mBitmap;
     // A hit box for collision detection
     private Rect hitBox;
@@ -24,7 +26,8 @@ public class EnemyShip {
     private int maxY;
     private int minY;
 
-    private EnemyShip(Bitmap mBitmap, int maxX, int maxY, int spawnX, int spawnY, int speed) {
+    private EnemyShip(Bitmap mBitmap, int maxX, int maxY, int spawnX, int spawnY, int speed, float scale) {
+        HITBOX_REDUCTON = (int) (HITBOX_REDUCTON * scale);
         this.x = spawnX;
         this.y = spawnY;
         this.maxX = maxX;
@@ -33,7 +36,8 @@ public class EnemyShip {
         this.minY = 0;
         this.speed = speed;
         this.mBitmap = mBitmap;
-        this.hitBox = new Rect(x, y, mBitmap.getWidth(), mBitmap.getHeight());
+
+        this.hitBox = new Rect(x + HITBOX_REDUCTON, y + HITBOX_REDUCTON, mBitmap.getWidth() - HITBOX_REDUCTON, mBitmap.getHeight() - HITBOX_REDUCTON);
     }
 
     public Bitmap getBitmap() {
@@ -67,16 +71,16 @@ public class EnemyShip {
         //respawn when off screen
         if (x < minX - mBitmap.getWidth()) {
             Random generator = new Random();
-            speed = generator.nextInt(10) + 10;
+            speed = generator.nextInt(10) + 5;
             x = maxX;
             y = generator.nextInt(maxY) - mBitmap.getHeight();
         }
 
         // Refresh hit box location
-        hitBox.left = x;
-        hitBox.top = y;
-        hitBox.right = x + mBitmap.getWidth();
-        hitBox.bottom = y + mBitmap.getHeight();
+        hitBox.left = x + HITBOX_REDUCTON;
+        hitBox.top = y + HITBOX_REDUCTON;
+        hitBox.right = x + mBitmap.getWidth() - HITBOX_REDUCTON;
+        hitBox.bottom = y + mBitmap.getHeight() - HITBOX_REDUCTON;
     }
 
     public static class Builder {
@@ -91,6 +95,7 @@ public class EnemyShip {
 
         // Spawn enemies within screen bounds
         private int maxY;
+        private float scale;
 
         public Builder(Context context) {
             this.mContext = context;
@@ -101,8 +106,9 @@ public class EnemyShip {
                     (mContext.getResources(), bitmapResource);
 
             final float scale = mContext.getResources().getDisplayMetrics().density;
-            int width = (int) (74 * scale + 0.5f);
-            int heigth = (int) (48 * scale + 0.5f);
+            this.scale = scale;
+            int width = (int) (64 * scale + 0.5f);
+            int heigth = (int) (38 * scale + 0.5f);
             this.mBitmap = Bitmap.createScaledBitmap(mBitmap, width, heigth, false);
             return this;
         }
@@ -125,7 +131,7 @@ public class EnemyShip {
             x = maxX;
             y = generator.nextInt(maxY) - mBitmap.getHeight();
 
-            return new EnemyShip(mBitmap, maxX, maxY, x, y, mSpeed);
+            return new EnemyShip(mBitmap, maxX, maxY, x, y, mSpeed, scale);
         }
     }
 }

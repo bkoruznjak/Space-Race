@@ -35,7 +35,6 @@ import hr.from.bkoruznjak.spacerace.model.firebase.HighScore;
 
 public class SRView extends SurfaceView implements Runnable, SRControl, GameControl {
 
-
     private static final int TARGET_FPS = 60;
     //this is just a user safety feature to block immediate restart for 5secs after game ends.
     private static final int GAME_RESET_TIMEOUT_IN_MILLIS = 1500;
@@ -118,7 +117,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
         mScale = context.getResources().getDisplayMetrics().density;
         // init the HUD
-        hudGameOverSize = (50 * mScale) + 0.5f;
+        hudGameOverSize = (35 * mScale) + 0.5f;
         hudGameOverY = (75 * mScale) + 0.5f;
         hudHighestScoreSize = (15 * mScale) + 0.5f;
         hudHighestScoreY = (120 * mScale) + 0.5f;
@@ -128,9 +127,9 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         hudDistanceCoveredY = (170 * mScale) + 0.5f;
         hudTapToRetrySize = (30 * mScale) + 0.5f;
         hudTapToRetryY = (230 * mScale) + 0.5f;
-        hudHighScoreSize = (50 * mScale) + 0.5f;
+        hudHighScoreSize = (40 * mScale) + 0.5f;
         hudHighScoreY = (300 * mScale) + 0.5f;
-        hudRecordScoreSize = (60 * mScale) + 0.5f;
+        hudRecordScoreSize = (50 * mScale) + 0.5f;
         hudRecordScoreY = (310 * mScale) + 0.5f;
         //load the shield graphics
         int life_size = (int) (16 * mScale + 0.5f);
@@ -163,7 +162,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
             this.mPlayerShip = new SpaceShip
                     .Builder(mContext)
-                    .bitmap(R.drawable.viking)
+                    .bitmap(R.drawable.speedy)
                     .speed(50)
                     .x(50)
                     .y(50)
@@ -173,21 +172,21 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
             this.mEnemy1 = new EnemyShip
                     .Builder(mContext)
-                    .bitmap(R.drawable.protoss_scout)
+                    .bitmap(R.drawable.enemy_ship)
                     .screenX(mScreenX)
                     .screenY(mScreenY)
                     .build();
 
             this.mEnemy2 = new EnemyShip
                     .Builder(mContext)
-                    .bitmap(R.drawable.protoss_scout)
+                    .bitmap(R.drawable.enemy_ship)
                     .screenX(mScreenX)
                     .screenY(mScreenY)
                     .build();
 
             this.mEnemy3 = new EnemyShip
                     .Builder(mContext)
-                    .bitmap(R.drawable.protoss_scout)
+                    .bitmap(R.drawable.enemy_ship)
                     .screenX(mScreenX)
                     .screenY(mScreenY)
                     .build();
@@ -283,9 +282,9 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
         // Update the enemies
         int playerSpeed = mPlayerShip.getSpeed();
         mPlanet.update(playerSpeed);
-        mEnemy1.update(playerSpeed);
-        mEnemy2.update(playerSpeed);
-        mEnemy3.update(playerSpeed);
+        mEnemy1.update(playerSpeed / 2);
+        mEnemy2.update(playerSpeed / 2);
+        mEnemy3.update(playerSpeed / 2);
 
         for (int i = 0; i < mDustArray.length; i++) {
             (mDustArray[i]).update(playerSpeed);
@@ -510,7 +509,6 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                 }
                 break;
         }
-
         return true;
     }
 }
