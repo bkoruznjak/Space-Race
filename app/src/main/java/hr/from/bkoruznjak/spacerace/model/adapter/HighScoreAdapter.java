@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import hr.from.bkoruznjak.spacerace.R;
@@ -17,6 +18,8 @@ import hr.from.bkoruznjak.spacerace.model.firebase.HighScore;
  */
 
 public class HighScoreAdapter extends ArrayAdapter<HighScore> {
+
+    private DecimalFormat formatter = new DecimalFormat("#,###,###");
 
     public HighScoreAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
@@ -44,7 +47,8 @@ public class HighScoreAdapter extends ArrayAdapter<HighScore> {
             TextView textAlias = (TextView) v.findViewById(R.id.text_alias);
 
             if (textScore != null) {
-                textScore.setText(Long.toString(highScore.getScore()));
+                String yourFormattedString = formatter.format(highScore.getScore());
+                textScore.setText(yourFormattedString);
             }
 
             if (textAlias != null) {

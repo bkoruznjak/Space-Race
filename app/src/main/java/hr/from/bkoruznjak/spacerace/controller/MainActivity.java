@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private HighScoreAdapter mHighScoreAdapter;
     private AlertDialog mAliasDialog;
     private SharedPreferences mPreferences;
+    private DecimalFormat formatter = new DecimalFormat("#,###,###");
 
     private boolean isFirstRun;
 
@@ -170,6 +172,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mBinding.textPilotHighScore.setText(Long.toString(mPreferences.getLong(PreferenceKeyConstants.KEY_PERSONAL_HIGHSCORE, 0)));
+        mBinding.textPilotHighScore.setText(formatter.format(mPreferences.getLong(PreferenceKeyConstants.KEY_PERSONAL_HIGHSCORE, 0)));
     }
 }
