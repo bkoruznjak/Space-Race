@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -133,9 +135,9 @@ public class MainActivity extends AppCompatActivity {
         mAliasDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface arg0) {
-                mAliasDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.aliasColor));
+                mAliasDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.lightCyan));
                 final EditText userInput = (EditText) mAliasDialog.findViewById(R.id.alias);
-                userInput.getBackground().mutate().setColorFilter(getResources().getColor(R.color.aliasColor), PorterDuff.Mode.SRC_ATOP);
+                userInput.getBackground().mutate().setColorFilter(getResources().getColor(R.color.lightCyan), PorterDuff.Mode.SRC_ATOP);
                 userInput.setTypeface(newXDigitalTypeface);
                 //filter only to uppercase and limit to 15
                 userInput.setFilters(new InputFilter[]{new InputFilter.AllCaps(), new InputFilter.LengthFilter(15)});
@@ -167,6 +169,12 @@ public class MainActivity extends AppCompatActivity {
             mAliasDialog.show();
             mPreferences.edit().putBoolean(PreferenceKeyConstants.KEY_FIRST_RUN, false).apply();
         }
+
+
+        GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(mBinding.imageBackground);
+        Glide.with(this)
+                .load(R.drawable.space_race)
+                .into(imageViewTarget);
     }
 
     @Override

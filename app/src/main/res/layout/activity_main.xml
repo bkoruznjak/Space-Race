@@ -2,109 +2,123 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
-        android:padding="16dp"
+        android:background="#ff000000"
         tools:context="hr.from.bkoruznjak.spacerace.controller.MainActivity">
 
-        <hr.from.bkoruznjak.spacerace.view.TitleTextView
-            android:id="@+id/text_game_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
-            android:text="@string/app_title"
-            android:textColor="#ffffffff"
-            android:textSize="55sp" />
+        <ImageView
+            android:id="@+id/image_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
 
-        <LinearLayout
-            android:id="@+id/layout_userInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:orientation="vertical">
 
-            <hr.from.bkoruznjak.spacerace.view.ScoreTextView
-                android:id="@+id/text_pilot_in_cockpit"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <hr.from.bkoruznjak.spacerace.view.TitleTextView
+                android:id="@+id/text_game_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/in_cockpit"
-                android:textColor="@color/aliasColor"
-                android:textSize="8sp" />
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="16dp"
+                android:text="@string/app_title"
+                android:textColor="#ffffffff"
+                android:textSize="55sp" />
+
+            <LinearLayout
+                android:id="@+id/layout_userInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:orientation="vertical">
+
+                <hr.from.bkoruznjak.spacerace.view.ScoreTextView
+                    android:id="@+id/text_pilot_in_cockpit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/in_cockpit"
+                    android:textColor="@color/lightCyan"
+                    android:textSize="8sp" />
+
+                <Button
+                    android:id="@+id/button_edit_callsign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_highscore"
+                    android:text="@string/callsign"
+                    android:textColor="@color/lightCyan"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_userHighScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="16dp"
+                android:layout_toRightOf="@+id/layout_userInfo"
+                android:orientation="vertical">
+
+                <hr.from.bkoruznjak.spacerace.view.ScoreTextView
+                    android:id="@+id/text_pilot_highScore_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Best flight:"
+                    android:textColor="@color/lightCyan"
+                    android:textSize="8sp" />
+
+                <hr.from.bkoruznjak.spacerace.view.ScoreTextView
+                    android:id="@+id/text_pilot_highScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_highscore"
+                    android:text="000"
+                    android:textColor="@color/lightCyan"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
 
             <Button
-                android:id="@+id/button_edit_callsign"
+                android:id="@+id/button_start_game"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_highscore"
-                android:text="@string/callsign"
-                android:textColor="@color/aliasColor"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_userHighScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@+id/layout_userInfo"
-            android:orientation="vertical">
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/shape_alias"
+                android:text="New Game"
+                android:textColor="@color/lightCyan" />
 
             <hr.from.bkoruznjak.spacerace.view.ScoreTextView
-                android:id="@+id/text_pilot_highScore_title"
+                android:id="@+id/text_highscore_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Best flight:"
-                android:textColor="@color/aliasColor"
-                android:textSize="8sp" />
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/text_game_title"
+                android:text="Wall of fame:"
+                android:textColor="@color/lightCyan"
+                android:textSize="18sp" />
 
-            <hr.from.bkoruznjak.spacerace.view.ScoreTextView
-                android:id="@+id/text_pilot_highScore"
+            <ListView
+                android:id="@+id/list_highscores"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_highscore"
-                android:text="000"
-                android:textColor="@color/aliasColor"
-                android:textSize="16sp" />
 
-        </LinearLayout>
+                android:layout_above="@+id/layout_userInfo"
+                android:layout_below="@+id/text_highscore_title">
 
+            </ListView>
 
-        <Button
-            android:id="@+id/button_start_game"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/shape_alias"
-            android:text="New Game"
-            android:textColor="@color/aliasColor" />
+        </RelativeLayout>
 
-        <hr.from.bkoruznjak.spacerace.view.ScoreTextView
-            android:id="@+id/text_highscore_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/text_game_title"
-            android:text="Wall of fame:"
-            android:textColor="@color/aliasColor"
-            android:textSize="18sp" />
-
-        <ListView
-            android:id="@+id/list_highscores"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_above="@+id/layout_userInfo"
-            android:layout_below="@+id/text_highscore_title">
-
-        </ListView>
-
-    </RelativeLayout>
+    </FrameLayout>
 </layout>

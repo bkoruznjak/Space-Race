@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="aliasColor">#3CC900</color>
     <color name="aliasColorDark">#309F00</color>
+    <color name="babyBlue">#CCFFFF</color>
+    <color name="lightCyan">#E0FFFF</color>
+    <color name="paleTurquoise">#AFEEEE</color>
 </resources>

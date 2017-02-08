@@ -27,9 +27,11 @@ public class EnemyShip {
 
     private int maxY;
     private int minY;
+    private float mScale;
 
     private EnemyShip(Bitmap mBitmap, int maxX, int maxY, int spawnX, int spawnY, int speed, float scale) {
         HITBOX_REDUCTON = (int) (HITBOX_REDUCTON * scale);
+        this.mScale = scale;
         this.x = spawnX;
         this.y = spawnY;
         this.maxX = maxX;
@@ -73,7 +75,7 @@ public class EnemyShip {
         //respawn when off screen
         if (x < minX - mBitmap.getWidth()) {
             Random generator = new Random();
-            speed = generator.nextInt(10) + 5;
+            speed = generator.nextInt(10) + ((int) (5.0f * mScale));
             x = maxX;
             y = generator.nextInt(maxY) - mBitmap.getHeight();
         }
@@ -98,6 +100,8 @@ public class EnemyShip {
         // Spawn enemies within screen bounds
         private int maxY;
         private float scale;
+        private float width;
+        private float height;
 
         public Builder(Context context) {
             this.mContext = context;
@@ -109,6 +113,8 @@ public class EnemyShip {
 
             final float scale = mContext.getResources().getDisplayMetrics().density;
             this.scale = scale;
+            this.width = mContext.getResources().getDisplayMetrics().widthPixels / 1000;
+            this.height = mContext.getResources().getDisplayMetrics().heightPixels / 1000;
             int width = (int) (BitmapSizeConstants.WIDTH_ENEMY_SHIP_AIM * scale + 0.5f);
             int heigth = (int) (BitmapSizeConstants.HEIGHT_ENEMY_SHIP_AIM * scale + 0.5f);
             this.mBitmap = Bitmap.createScaledBitmap(mBitmap, width, heigth, false);

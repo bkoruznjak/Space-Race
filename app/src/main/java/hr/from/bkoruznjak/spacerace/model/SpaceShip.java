@@ -41,6 +41,7 @@ public class SpaceShip {
     private float mTimeSpentBoosting = 0f;
     private float mBoostStartTime = 0f;
     private float mBoostEndTime = 0f;
+    private float mScale;
 
     private SpaceShip(Builder builder) {
         FLAME_EFFECT_X_OFFSET = (int) (FLAME_EFFECT_X_OFFSET * builder.scale);
@@ -61,6 +62,7 @@ public class SpaceShip {
         this.effectBoostedX = this.x + FLAME_EFFECT_X_OFFSET - effectTrailArrayEnhanced[0].getWidth();
         this.effectY = this.y + ((bitmap.getHeight() - effectTrailArray[0].getHeight()) / 2);
         this.effectBoostedY = this.y + ((bitmap.getHeight() - effectTrailArrayEnhanced[0].getHeight()) / 2);
+        this.mScale = builder.scale;
     }
 
     public int getSpeed() {
@@ -131,10 +133,10 @@ public class SpaceShip {
         // Are we boosting?
         if (boosting) {
             // Speed up
-            speed += 2;
+            speed += ((int) (2.0f * mScale));
         } else {
             // Slow down
-            speed -= 5;
+            speed -= ((int) (5.0f * mScale));
         }
 
         // Constrain top speed
