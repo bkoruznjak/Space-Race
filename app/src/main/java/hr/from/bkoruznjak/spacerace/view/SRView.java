@@ -387,7 +387,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
             if (!gameEnded) {
                 // Draw the hud
                 mHudColor.setTextAlign(Paint.Align.LEFT);
-                mHudColor.setColor(Color.argb(255, 255, 255, 255));
+                mHudColor.setColor(Color.argb(255, 204, 255, 255)); // @color baby blue
                 mHudColor.setTextSize(25);
                 mScreenCanvas.drawText("Personal best:" + mHighScore, 10, 20, mHudColor);
                 mScreenCanvas.drawText("Flight Time:" + mTimeTakenDecimal + "s", mScreenX / 2, 20, mHudColor);

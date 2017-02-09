@@ -28,7 +28,7 @@ public class TitleTextView extends TextView {
 
     private void init() {
         if (!isInEditMode()) {
-            Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/space_age.ttf");
+            Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/airstrikehalf.ttf");
             setTypeface(tf);
         }
     }
