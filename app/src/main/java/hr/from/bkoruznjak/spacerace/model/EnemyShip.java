@@ -14,13 +14,15 @@ import hr.from.bkoruznjak.spacerace.contants.BitmapSizeConstants;
  */
 
 public class EnemyShip {
+    private double lastTime=0;
     //magic numbers, we modify these once we have the scale from the builder
     private int HITBOX_REDUCTON = 10;
+    private int SPEED_PERCENTEGE_CHANGE_RANDOM=900;
     private Bitmap mBitmap;
     // A hit box for collision detection
     private Rect hitBox;
     private int x, y;
-    private int speed = 1;
+    private float speed = 1;
 
     private int maxX;
     private int minX;
@@ -28,20 +30,22 @@ public class EnemyShip {
     private int maxY;
     private int minY;
     private float mScale;
-
-    private EnemyShip(Bitmap mBitmap, int maxX, int maxY, int spawnX, int spawnY, int speed, float scale) {
+    private int sizeY;
+    private int startSpeed;
+    private EnemyShip(Bitmap mBitmap, int maxX, int maxY, int spawnX, int spawnY, int speed, float scale, int sizeY) {
         HITBOX_REDUCTON = (int) (HITBOX_REDUCTON * scale);
         this.mScale = scale;
         this.x = spawnX;
         this.y = spawnY;
+        this.sizeY=sizeY;
         this.maxX = maxX;
         this.maxY = maxY;
         this.minX = 0;
         this.minY = 0;
-        this.speed = speed;
+        this.speed =startSpeed= speed;
         this.mBitmap = mBitmap;
 
-        this.hitBox = new Rect(x + HITBOX_REDUCTON, y + HITBOX_REDUCTON, mBitmap.getWidth() - HITBOX_REDUCTON, mBitmap.getHeight() - HITBOX_REDUCTON);
+        this.hitBox = new Rect(x + HITBOX_REDUCTON, y + HITBOX_REDUCTON, sizeY - HITBOX_REDUCTON, sizeY* mBitmap.getWidth()/mBitmap.getHeight() - HITBOX_REDUCTON);
     }
 
     public Bitmap getBitmap() {
@@ -66,25 +70,31 @@ public class EnemyShip {
         return y;
     }
 
-    public void update(int playerSpeed) {
+    public void update(float playerSpeed) {
+        if(lastTime!=0) {
+            double  diffrence= System.currentTimeMillis()-lastTime;
+            diffrence=diffrence/1000;
+            // Move to the left
+            x -= playerSpeed*diffrence;
+            x -= speed*diffrence;
 
-        // Move to the left
-        x -= playerSpeed;
-        x -= speed;
+            //respawn when off screen
+            if (x < minX - mBitmap.getWidth()) {
+                Random generator = new Random();
 
-        //respawn when off screen
-        if (x < minX - mBitmap.getWidth()) {
-            Random generator = new Random();
-            speed = generator.nextInt(10) + ((int) (5.0f * mScale));
-            x = maxX;
-            y = generator.nextInt(maxY) - mBitmap.getHeight();
+                 if(generator.nextBoolean())   speed =startSpeed +  (generator.nextInt( SPEED_PERCENTEGE_CHANGE_RANDOM)*startSpeed/100);
+                 else  speed =startSpeed;
+                x = maxX;
+                y = generator.nextInt(maxY) - mBitmap.getHeight();
+            }
+
+            // Refresh hit box location
+            hitBox.left = x + HITBOX_REDUCTON;
+            hitBox.top = y + HITBOX_REDUCTON;
+            hitBox.right = x + sizeY* mBitmap.getWidth()/mBitmap.getHeight()  - HITBOX_REDUCTON;
+            hitBox.bottom = y + sizeY - HITBOX_REDUCTON;
         }
-
-        // Refresh hit box location
-        hitBox.left = x + HITBOX_REDUCTON;
-        hitBox.top = y + HITBOX_REDUCTON;
-        hitBox.right = x + mBitmap.getWidth() - HITBOX_REDUCTON;
-        hitBox.bottom = y + mBitmap.getHeight() - HITBOX_REDUCTON;
+        lastTime=System.currentTimeMillis();
     }
 
     public static class Builder {
@@ -98,7 +108,7 @@ public class EnemyShip {
         private int maxX;
 
         // Spawn enemies within screen bounds
-        private int maxY;
+        private int maxY,sizeX,sizeY;
         private float scale;
         private float width;
         private float height;
@@ -120,7 +130,15 @@ public class EnemyShip {
             this.mBitmap = Bitmap.createScaledBitmap(mBitmap, width, heigth, false);
             return this;
         }
+        public Builder sizeX(int size) {
+            this.sizeX = size;
+            return this;
+        }
 
+        public Builder sizeY(int size) {
+            this.sizeY = size;
+            return this;
+        }
         public Builder screenX(int screenX) {
             this.maxX = screenX;
             return this;
@@ -139,7 +157,7 @@ public class EnemyShip {
             x = maxX;
             y = generator.nextInt(maxY) - mBitmap.getHeight();
 
-            return new EnemyShip(mBitmap, maxX, maxY, x, y, mSpeed, scale);
+            return new EnemyShip(mBitmap, maxX, maxY, x, y, mSpeed, scale,sizeY);
         }
     }
 }

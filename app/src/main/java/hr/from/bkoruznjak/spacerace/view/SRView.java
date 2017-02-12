@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
@@ -34,6 +35,11 @@ import hr.from.bkoruznjak.spacerace.model.firebase.HighScore;
  */
 
 public class SRView extends SurfaceView implements Runnable, SRControl, GameControl {
+
+    private static final float SHIP_Y_SIZE_SCREEN_REL = 10;
+    private static final float ENEMY_SHIP_Y_SIZE_SCREEN_REL = 8;
+    private static final float SHIP_SPEED_SCREEN_REL = 70;
+    private static final float SHIP_SPEED_CLIMB_SCREEN_REL = 110;
 
     private static final int TARGET_FPS = 60;
     //this is just a user safety feature to block immediate restart for 5secs after game ends.
@@ -166,9 +172,9 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
             this.mPlayerShip = new SpaceShip
                     .Builder(mContext)
                     .bitmap(R.drawable.speedy)
-                    .speed(50)
-                    .x(50)
-                    .y(50)
+                    .speed(SHIP_SPEED_SCREEN_REL*mScreenY/100)
+                    .speedClimb(SHIP_SPEED_CLIMB_SCREEN_REL*mScreenY/100)
+                    .sizeY((int)(SHIP_Y_SIZE_SCREEN_REL*mScreenY/100))
                     .screenX(mScreenX)
                     .screenY(mScreenY)
                     .build();
@@ -178,12 +184,14 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                     .bitmap(R.drawable.enemy_ship)
                     .screenX(mScreenX)
                     .screenY(mScreenY)
+                    .sizeY((int)(ENEMY_SHIP_Y_SIZE_SCREEN_REL *mScreenY/100))
                     .build();
 
             this.mEnemy2 = new EnemyShip
                     .Builder(mContext)
                     .bitmap(R.drawable.enemy_ship)
                     .screenX(mScreenX)
+                    .sizeY((int)(ENEMY_SHIP_Y_SIZE_SCREEN_REL *mScreenY/100))
                     .screenY(mScreenY)
                     .build();
 
@@ -191,6 +199,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
                     .Builder(mContext)
                     .bitmap(R.drawable.enemy_ship)
                     .screenX(mScreenX)
+                    .sizeY((int)(ENEMY_SHIP_Y_SIZE_SCREEN_REL *mScreenY/100))
                     .screenY(mScreenY)
                     .build();
 
@@ -283,7 +292,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
 
         mPlayerShip.update();
         // Update the enemies
-        int playerSpeed = mPlayerShip.getSpeed();
+        float playerSpeed = mPlayerShip.getSpeed();
         mPlanet.update(playerSpeed);
         mEnemy1.update(playerSpeed / 2);
         mEnemy2.update(playerSpeed / 2);
@@ -331,8 +340,7 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
             // Draw the player
             mScreenCanvas.drawBitmap(
                     mPlayerShip.getBitmap(),
-                    mPlayerShip.getX(),
-                    mPlayerShip.getY(),
+                    null, mPlayerShip.getHitbox(),
                     mBackgroundColor);
 
             if (mSpecialEffectsIndex >= 3) {
@@ -342,34 +350,31 @@ public class SRView extends SurfaceView implements Runnable, SRControl, GameCont
             if (mPlayerShip.isBoosting()) {
                 mScreenCanvas.drawBitmap(
                         mPlayerShip.getEffectTrailArrayEnhanced()[mSpecialEffectsIndex],
-                        mPlayerShip.getEffectBoostedX(),
-                        mPlayerShip.getEffectBoostedY(),
+                        null,
+                        mPlayerShip.getRectFlamesBoosted(),
                         mBackgroundColor);
             } else {
                 mScreenCanvas.drawBitmap(
                         mPlayerShip.getEffectTrailArray()[mSpecialEffectsIndex],
-                        mPlayerShip.getEffectX(),
-                        mPlayerShip.getEffectY(),
+                        null,
+                        mPlayerShip.getRectFlames(),
                         mBackgroundColor);
             }
             mSpecialEffectsIndex++;
 
             mScreenCanvas.drawBitmap
                     (mEnemy1.getBitmap(),
-                            mEnemy1.getX(),
-                            mEnemy1.getY(),
+                            null,mEnemy1.getHitbox() ,
                             mBackgroundColor);
 
             mScreenCanvas.drawBitmap
                     (mEnemy2.getBitmap(),
-                            mEnemy2.getX(),
-                            mEnemy2.getY(),
+                            null,mEnemy2.getHitbox() ,
                             mBackgroundColor);
 
             mScreenCanvas.drawBitmap
                     (mEnemy3.getBitmap(),
-                            mEnemy3.getX(),
-                            mEnemy3.getY(),
+                           null, mEnemy3.getHitbox() ,
                             mBackgroundColor);
 
             //draw explosions

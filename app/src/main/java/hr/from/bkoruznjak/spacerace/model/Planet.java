@@ -14,6 +14,7 @@ import hr.from.bkoruznjak.spacerace.R;
 
 public class Planet {
     //change this if you add more planet pngs
+    private double lastTime=0;
     private static final int NUMBER_OF_PLANETS = 6;
     private Bitmap mBitmap;
     private int x, y;
@@ -53,11 +54,13 @@ public class Planet {
         return y;
     }
 
-    public void update(int playerSpeed) {
-
+    public void update(float playerSpeed) {
+        if(lastTime!=0) {
         // Move to the left
-        x -= playerSpeed / 3;
-        x -= speed;
+            double  diffrenceTime= System.currentTimeMillis()-lastTime;
+            diffrenceTime=diffrenceTime/1000;
+        x -=diffrenceTime* playerSpeed / 3;
+        x -= speed*diffrenceTime;
 
         //respawn when off screen
         if (x < minX - mBitmap.getWidth()) {
@@ -66,6 +69,8 @@ public class Planet {
             x = maxX;
             y = generator.nextInt(maxY) - mBitmap.getHeight();
         }
+        }
+        lastTime=System.currentTimeMillis();
     }
 
     public static class Builder {

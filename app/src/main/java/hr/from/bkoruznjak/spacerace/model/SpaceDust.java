@@ -7,7 +7,7 @@ import java.util.Random;
  */
 
 public class SpaceDust {
-
+    private double lastTime=0;
     private int x, y;
     private int speed;
 
@@ -25,6 +25,7 @@ public class SpaceDust {
         minX = 0;
         minY = 0;
 
+
         // Set a speed between  0 and 9
         Random generator = new Random();
         speed = generator.nextInt(10);
@@ -32,12 +33,16 @@ public class SpaceDust {
         //  Set the starting coordinates
         x = generator.nextInt(maxX);
         y = generator.nextInt(maxY);
+
     }
 
-    public void update(int playerSpeed) {
+    public void update(float playerSpeed) {
+        if(lastTime!=0) {
+            double  diffrenceTime= System.currentTimeMillis()-lastTime;
+            diffrenceTime=diffrenceTime/1000;
         // Speed up when the player does
-        x -= playerSpeed;
-        x -= speed;
+        x -= playerSpeed* diffrenceTime;
+        x -= speed* diffrenceTime;
 
         //respawn space dust
         if (x < 0) {
@@ -46,6 +51,8 @@ public class SpaceDust {
             y = generator.nextInt(maxY);
             speed = generator.nextInt(15);
         }
+        }
+        lastTime=System.currentTimeMillis();
     }
 
     // Getters and Setters
